@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -16,15 +16,7 @@ import RefundPolicy from './pages/RefundPolicy';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ContactUs from './pages/ContactUs';
-import LoadingScreen from './components/LoadingScreen';
-
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-
-  if (loading) {
-    return <LoadingScreen onComplete={() => setLoading(false)} />;
-  }
-
   return (
     <HashRouter>
       <Layout>
