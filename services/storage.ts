@@ -2,8 +2,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Account, Booking, Rank, BookingStatus, User, HomeConfig, Skin, Message } from '../types';
 
-const SUPABASE_URL = 'https://akwdzwrkhpyhrrcyvkpx.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_EjqnCcOPSh6uoT9y-g2OFw_ACj0byDo';
+const SUPABASE_URL = 'https://hrhmfyzxrbawabibsvri.supabase.co';
+const SUPABASE_KEY = 'sb_publishable__f3e82tOncuXMb9Iw646Xw_Y1em9zg6';
 
 // Custom logo image for UwU Valo Store
 export const SITE_LOGO_URL = "/logo.png";
