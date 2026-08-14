@@ -5,9 +5,8 @@ import { Account, Booking, Rank, BookingStatus, User, HomeConfig, Skin, Message 
 const SUPABASE_URL = 'https://akwdzwrkhpyhrrcyvkpx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_EjqnCcOPSh6uoT9y-g2OFw_ACj0byDo';
 
-// REPLACE THIS URL WITH YOUR OWN LOGO IMAGE URL
-// Using a Data URI for the Shield SVG to ensure it matches brand colors perfectly
-export const SITE_LOGO_URL = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJyZ2JhKDIzMiwgNjcsIDE0NywgMC4yKSIgc3Ryb2tlPSIjZTg0MzkzIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDEzYzAgNS0zLjUgNy41LTcuNjYgOC45NWExIDEgMCAwIDEtLjY3LS4wMUM3LjUgMjAuNSA0IDE4IDQgMTNWNmExIDEgMCAwIDEgMS0xYzIgMCA0LjUtMS4yIDYuMjQtMi43MmExLjE3IDEuMTcgMCAwIDEgMS41MiAwQzE0LjUxIDMuODEgMTcgNSAxOSA1YTEgMSAwIDAgMSAxIDF6Ii8+PC9zdmc+";
+// Custom logo image for UwU Valo Store
+export const SITE_LOGO_URL = "/logo.png";
 
 // Lazy load Supabase to avoid constructor issues at module-level load
 let supabaseInstance: SupabaseClient | null = null;

@@ -153,7 +153,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
            {/* Mobile: Centered Logo exactly like image */}
            {/* Desktop: Logo Left */}
            <Link to="/" className="flex items-center gap-3 group relative z-10">
-              <Shield className="w-6 h-6 md:w-8 md:h-8 text-brand-accent fill-transparent stroke-[2px]" />
+              <img src={SITE_LOGO_URL} alt="UwU Valo" className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" />
               <div>
                  <h1 className="font-display font-black text-xl md:text-2xl tracking-tighter uppercase italic leading-none text-white">
                     UWU <span className="text-brand-accent">VALO STORE</span>
@@ -256,7 +256,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                <div className="col-span-1 md:col-span-2">
                   <Link to="/" className="flex items-center gap-3 mb-6">
-                     <img src={SITE_LOGO_URL} alt="" className="w-8 h-8 opacity-80 grayscale" />
+                     <img src={SITE_LOGO_URL} alt="" className="w-8 h-8 rounded-full object-cover opacity-80" />
                      <span className="font-display font-black text-xl text-white uppercase italic tracking-wide">UwU <span className="text-brand-accent">Valo</span></span>
                   </Link>
                   <p className="text-slate-500 text-sm leading-relaxed max-w-sm mb-6">
