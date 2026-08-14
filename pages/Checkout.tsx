@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { Account, UPI_ID, RAZORPAY_KEY_ID, BookingStatus, Booking } from '../types';
+import { Account, RAZORPAY_KEY_ID, BookingStatus, Booking } from '../types';
 import { StorageService } from '../services/storage';
 import { Copy, ArrowRight, Timer, CalendarClock, Smartphone, ShieldCheck, Zap, Send, Ticket, CheckCircle, XCircle, Loader2, AlertCircle, MessageCircle, CreditCard } from 'lucide-react';
 
@@ -23,9 +23,7 @@ const Checkout: React.FC = () => {
   
   const [orderId, setOrderId] = useState(state?.orderId || '');
   const [timer, setTimer] = useState(600); // 10 minutes for payment
-  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi'>('razorpay');
   const [isRazorpayLoading, setIsRazorpayLoading] = useState(false);
-  const [utr, setUtr] = useState('');
   const [error, setError] = useState('');
   
   // Coupon State
@@ -88,10 +86,6 @@ const Checkout: React.FC = () => {
     finalPrice = basePrice - discountAmount;
   }
 
-  // Construct UPI URI with amount and order ID
-  // tn (Transaction Note) is critical here - it puts the Order ID in the bank statement for the admin
-  const upiString = `upi://pay?pa=${UPI_ID}&pn=UwUValo&am=${finalPrice.toFixed(2)}&cu=INR&tn=${orderId}`;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(upiString)}`;
 
   // --- Coupon Handlers ---
   const handleApplyCoupon = async () => {
@@ -231,95 +225,7 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const handleSubmitPayment = async () => {
-    if (!utr) {
-      setError('Please enter the Transaction ID / UTR number.');
-      return;
-    }
-    
-    // Relaxed validation: Allow alphanumeric and check for reasonable length (e.g., 6+ chars)
-    if (utr.length < 6) {
-      setError('Invalid UTR. Please enter a valid reference ID.');
-      return;
-    }
 
-    // Increment Coupon usage if applied
-    if (appliedCoupon) {
-       await StorageService.incrementCouponUsage(appliedCoupon.code);
-    }
-
-    if (state.orderId) {
-       // Update existing PENDING booking
-       const booking: Booking = {
-         orderId,
-         accountId: state.account.id,
-         accountName: state.account.name,
-         durationLabel: state.durationLabel,
-         hours: state.hours,
-         totalPrice: finalPrice, // Use discounted price
-         startTime: startDateTime.toISOString(),
-         endTime: endDateTime.toISOString(),
-         status: BookingStatus.PENDING, 
-         createdAt: new Date().toISOString(),
-         utr: utr,
-         customerId: currentUser?.id,
-         customerName: currentUser?.name,
-         couponCode: appliedCoupon ? appliedCoupon.code : undefined,
-         discountApplied: appliedCoupon ? discountAmount : undefined
-       };
-       await StorageService.updateBooking(booking);
-    } else {
-       // Legacy Fallback: Create new booking
-       const newBooking: Booking = {
-        orderId,
-        accountId: state.account.id,
-        accountName: state.account.name,
-        durationLabel: state.durationLabel,
-        hours: state.hours,
-        totalPrice: finalPrice, // Use discounted price
-        startTime: startDateTime.toISOString(),
-        endTime: endDateTime.toISOString(),
-        status: BookingStatus.PENDING,
-        createdAt: new Date().toISOString(),
-        utr: utr,
-        customerId: currentUser?.id, // Link to logged in user
-        customerName: currentUser?.name,
-        couponCode: appliedCoupon ? appliedCoupon.code : undefined,
-        discountApplied: appliedCoupon ? discountAmount : undefined
-      };
-      await StorageService.createBooking(newBooking);
-    }
-
-    // 2. Construct WhatsApp Message
-    const timeString = state.startMode === 'later' 
-      ? startDateTime.toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-      : "Immediate";
-
-    let message = `
-*PAYMENT SUBMITTED*
----------------------
-*Order ID:* ${orderId}
-*Valorant ID:* ${state.account.name}
-*Duration:* ${state.durationLabel}
-*Price:* ₹${finalPrice}`;
-
-    if (appliedCoupon) {
-      message += `\n*Coupon:* ${appliedCoupon.code} (-₹${discountAmount})`;
-    }
-
-    message += `\n*Start Time:* ${timeString}
-*UTR/Ref ID:* ${utr}
----------------------
-I have made the payment. Please verify.
-    `.trim();
-
-    // 3. Redirect to WhatsApp (Open in new tab to avoid iframe/preview blocks)
-    const whatsappUrl = `https://wa.me/919860185116?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-    
-    // 4. Redirect user to Dashboard to track status
-    navigate('/dashboard');
-  };
 
   const isUserListed = !!state.account.listedBy && state.account.listedBy !== currentUser?.id;
 
@@ -484,41 +390,16 @@ I have made the payment. Please verify.
              {/* Background Glow */}
              <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 blur-3xl rounded-full pointer-events-none"></div>
 
-             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-               <h2 className="text-xl font-bold flex items-center gap-2">
-                 <span className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-sm text-white shadow-[0_0_15px_rgba(232,67,147,0.4)]">2</span>
-                 Payment Method
-               </h2>
+             <div className="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                <div className="w-10 h-10 rounded-full bg-brand-accent/20 flex items-center justify-center border border-brand-accent/50 shrink-0 shadow-[0_0_15px_rgba(232,67,147,0.3)]">
+                  <CreditCard className="text-brand-accent w-5 h-5" />
+                </div>
+                <h2 className="text-xl md:text-2xl font-black text-white italic uppercase tracking-wider">
+                  Payment Gateway
+                </h2>
+              </div>
 
-               {/* Payment Method Selector Tabs */}
-               <div className="flex bg-brand-dark p-1 rounded-xl border border-white/10 shrink-0">
-                 <button
-                   onClick={() => { setPaymentMethod('razorpay'); setError(''); }}
-                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
-                     paymentMethod === 'razorpay'
-                       ? 'bg-brand-accent text-white shadow-md'
-                       : 'text-slate-400 hover:text-white'
-                   }`}
-                 >
-                   <CreditCard size={14} />
-                   Instant Pay (Razorpay)
-                 </button>
-                 <button
-                   onClick={() => { setPaymentMethod('upi'); setError(''); }}
-                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
-                     paymentMethod === 'upi'
-                       ? 'bg-brand-accent text-white shadow-md'
-                       : 'text-slate-400 hover:text-white'
-                   }`}
-                 >
-                   <Smartphone size={14} />
-                   Manual UPI QR
-                 </button>
-               </div>
-             </div>
-
-             {paymentMethod === 'razorpay' ? (
-               /* RAZORPAY PAYMENT GATEWAY */
+               {/* RAZORPAY PAYMENT GATEWAY */}
                <div className="bg-brand-dark/60 border border-white/10 rounded-2xl p-6 sm:p-8 text-center space-y-6">
                  <div className="max-w-md mx-auto space-y-4">
                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-accent/10 border border-brand-accent/30 text-brand-accent mb-2">
@@ -574,88 +455,6 @@ I have made the payment. Please verify.
                    </p>
                  </div>
                </div>
-             ) : (
-               /* MANUAL UPI QR & UTR SECTION */
-               <div className="grid md:grid-cols-2 gap-8">
-                   {/* QR Code Column */}
-                   <div className="flex flex-col items-center">
-                      {/* Mobile Pay Button */}
-                      <div className="md:hidden w-full mb-6">
-                        <a 
-                          href={upiString}
-                          className="w-full bg-white text-brand-darker font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors animate-pulse no-underline"
-                        >
-                          <Smartphone className="w-6 h-6" />
-                          Tap to Pay via UPI
-                        </a>
-                        <div className="flex items-center gap-2 justify-center mt-2 text-slate-500 text-xs">
-                            <span className="w-12 h-px bg-white/10"></span> OR <span className="w-12 h-px bg-white/10"></span>
-                        </div>
-                      </div>
-
-                      <div className="bg-white p-4 rounded-xl shadow-inner relative group mx-auto">
-                        <img 
-                          src={qrCodeUrl} 
-                          alt="UPI QR Code" 
-                          className="w-48 h-48 mix-blend-multiply"
-                        />
-                        {/* Scan Overlay */}
-                        <div className="absolute top-0 left-0 w-full h-1 bg-brand-accent/50 animate-[scan_2s_infinite_linear] pointer-events-none" />
-                      </div>
-                      <div className="text-center mt-4">
-                          <p className="text-slate-400 text-sm mb-1">Scan to pay</p>
-                          <p className="text-2xl font-black text-white">₹{finalPrice}</p>
-                      </div>
-                   </div>
-
-                   {/* UTR Column */}
-                   <div className="flex flex-col justify-center space-y-6">
-                      <div className="bg-brand-dark p-4 rounded-lg border border-white/10">
-                         <div className="text-xs text-slate-400 uppercase font-bold mb-2">Merchant UPI ID</div>
-                         <div className="flex items-center justify-between">
-                            <span className="font-mono text-white text-lg">{UPI_ID}</span>
-                            <button 
-                               onClick={() => {
-                                 navigator.clipboard.writeText(UPI_ID);
-                               }}
-                               className="text-brand-accent hover:text-white transition-colors"
-                            >
-                              <Copy className="w-5 h-5" />
-                            </button>
-                         </div>
-                      </div>
-
-                      <div className="border-t border-white/10 pt-6">
-                          <label className="block text-sm font-bold text-white mb-2">
-                             Enter Payment Reference ID (UTR)
-                          </label>
-                          <input 
-                            type="text" 
-                            value={utr}
-                            onChange={(e) => {
-                              setUtr(e.target.value);
-                              setError('');
-                            }}
-                            placeholder="12-digit UTR (e.g. 3245xxxxxxxx)"
-                            className="w-full bg-brand-dark border border-white/10 rounded-lg px-4 py-4 text-white focus:border-brand-accent focus:outline-none mb-2 font-mono text-lg tracking-widest placeholder:tracking-normal"
-                            maxLength={12}
-                          />
-                          {error && <p className="text-red-500 text-xs mb-3 font-bold flex items-center gap-1"><AlertCircle size={12}/> {error}</p>}
-
-                          <button 
-                            onClick={handleSubmitPayment}
-                            className="w-full bg-brand-accent hover:bg-pink-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/20 mt-2"
-                          >
-                            <Send className="w-5 h-5" />
-                            VERIFY & BOOK SLOT
-                          </button>
-                          <p className="text-[10px] text-center mt-3 text-slate-500">
-                             Instant verification via WhatsApp protocol.
-                          </p>
-                      </div>
-                   </div>
-               </div>
-             )}
          </div>
       </div>
     </div>

@@ -78,10 +78,6 @@ const UserAuth: React.FC = () => {
     }
   };
 
-  const handleGuestBrowsing = () => {
-    navigate('/browse');
-  };
-
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 relative overflow-hidden py-10">
         {/* Animated Background Elements */}
@@ -252,17 +248,6 @@ const UserAuth: React.FC = () => {
                       {isRegistering ? "Login Here" : "Register Now"}
                     </button>
                   </p>
-                </div>
-
-                {/* Guest Button */}
-                <div className="mt-4">
-                  <button 
-                      onClick={handleGuestBrowsing}
-                      className="w-full py-3 rounded-xl border border-white/5 hover:bg-white/5 text-slate-500 hover:text-white text-xs font-medium transition-colors flex items-center justify-center gap-2 group uppercase tracking-widest"
-                  >
-                      <Gamepad2 className="w-3 h-3 group-hover:text-brand-cyan transition-colors" />
-                      Continue as Guest
-                  </button>
                 </div>
             </div>
             
