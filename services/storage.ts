@@ -512,9 +512,77 @@ export const StorageService = {
     return data ? JSON.parse(data) : null;
   },
 
-  logoutUser: () => {
+  logoutUser: async () => {
     localStorage.removeItem(CURRENT_USER_KEY);
+    try {
+      await getSupabase().auth.signOut();
+    } catch (e) {
+      // Ignore auth signout errors
+    }
     notifyStorageChange();
+  },
+
+  loginWithGoogle: async () => {
+    const currentOrigin = window.location.origin;
+    const currentPath = window.location.pathname;
+    const currentHash = window.location.hash || '#/login';
+    const redirectUrl = `${currentOrigin}${currentPath}${currentHash}`;
+    
+    const { error } = await getSupabase().auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl
+      }
+    });
+    if (error) throw error;
+  },
+
+  syncGoogleSession: async (): Promise<User | null> => {
+    try {
+      const { data: { session } } = await getSupabase().auth.getSession();
+      if (!session || !session.user) return null;
+
+      const gUser = session.user;
+      const email = gUser.email || '';
+      if (!email) return null;
+
+      // Check if user exists in custom users table
+      const { data: row } = await getSupabase().from('users').select('data').eq('email', email).single();
+
+      let appUser: User;
+
+      if (row && row.data) {
+        appUser = row.data as User;
+        appUser.lastLogin = new Date().toISOString();
+        if (gUser.id && !appUser.googleId) appUser.googleId = gUser.id;
+        await getSupabase().from('users').update({ data: appUser }).eq('id', appUser.id);
+      } else {
+        const name = gUser.user_metadata?.full_name || gUser.user_metadata?.name || email.split('@')[0] || 'Agent';
+        const avatarUrl = gUser.user_metadata?.avatar_url || gUser.user_metadata?.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`;
+        
+        appUser = {
+          id: 'usr-g-' + Date.now(),
+          googleId: gUser.id,
+          name,
+          email,
+          avatarUrl,
+          role: 'customer',
+          isVerified: true,
+          ultraPoints: 0,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString()
+        };
+
+        await getSupabase().from('users').insert({ id: appUser.id, email: appUser.email, data: appUser });
+      }
+
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(appUser));
+      notifyStorageChange();
+      return appUser;
+    } catch (err) {
+      console.error("Error syncing Google session:", err);
+      return null;
+    }
   },
 
   getAllUsers: async (): Promise<User[]> => {
