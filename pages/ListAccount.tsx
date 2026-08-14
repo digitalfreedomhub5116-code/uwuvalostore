@@ -260,7 +260,7 @@ const ListAccount: React.FC = () => {
             <button 
                type="submit" 
                disabled={loading}
-               className="w-full py-4 bg-brand-accent hover:bg-red-600 text-white font-bold rounded-xl shadow-lg shadow-brand-accent/20 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+               className="w-full py-4 bg-brand-accent hover:bg-pink-600 text-white font-bold rounded-xl shadow-lg shadow-brand-accent/20 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2 disabled:opacity-50"
             >
                {loading ? <Loader2 className="animate-spin" /> : <Save size={18} />}
                {loading ? 'Submitting...' : 'List Account for Rent'}

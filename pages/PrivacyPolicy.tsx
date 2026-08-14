@@ -28,7 +28,7 @@ const PrivacyPolicy: React.FC = () => {
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-accent rounded-l-2xl"></div>
             <ShieldCheck className="w-8 h-8 text-brand-accent shrink-0 mt-1" />
             <p className="text-sm md:text-base">
-                At <strong>Krishna Valostore</strong>, we are committed to protecting your privacy. This policy outlines how we collect, use, and safeguard your personal information while you use our Valorant account rental services.
+                At <strong>UwU Valostore</strong>, we are committed to protecting your privacy. This policy outlines how we collect, use, and safeguard your personal information while you use our Valorant account rental services.
             </p>
         </div>
 
@@ -152,7 +152,7 @@ const PrivacyPolicy: React.FC = () => {
                 <h2 className="text-xl font-bold text-white uppercase tracking-wider">7. Changes to This Policy</h2>
             </div>
             <p className="pl-11 text-sm md:text-base text-slate-400">
-                Krishna Valostore reserves the right to update this Privacy Policy at any time. Any changes will be posted on this page with an updated "Effective Date." We encourage users to check this page frequently to stay informed.
+                UwU Valostore reserves the right to update this Privacy Policy at any time. Any changes will be posted on this page with an updated "Effective Date." We encourage users to check this page frequently to stay informed.
             </p>
         </section>
 

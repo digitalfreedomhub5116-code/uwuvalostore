@@ -28,7 +28,7 @@ const TermsOfService: React.FC = () => {
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-accent rounded-l-2xl"></div>
             <ScrollText className="w-8 h-8 text-brand-accent shrink-0 mt-1" />
             <p className="text-sm md:text-base">
-                By renting a Valorant ID from <strong>Krishna Valostore</strong>, you agree to abide by the following terms. Failure to comply will result in immediate termination of your rental without a refund.
+                By renting a Valorant ID from <strong>UwU Valostore</strong>, you agree to abide by the following terms. Failure to comply will result in immediate termination of your rental without a refund.
             </p>
         </div>
 
@@ -41,7 +41,7 @@ const TermsOfService: React.FC = () => {
                 <h2 className="text-xl font-bold text-white uppercase tracking-wider">1. Account Ownership & Usage</h2>
             </div>
             <div className="pl-11 space-y-4 text-sm md:text-base text-slate-400">
-                <p>All accounts remain the sole property of Krishna Valostore.</p>
+                <p>All accounts remain the sole property of UwU Valostore.</p>
                 <p>You are granted a temporary license to use the account for the duration of your paid rental period.</p>
                 <div className="bg-red-500/5 border border-red-500/10 p-4 rounded-xl">
                     <strong className="text-red-400 block mb-2 text-xs uppercase tracking-widest flex items-center gap-2"><AlertOctagon size={12}/> Prohibited</strong>
@@ -92,7 +92,7 @@ const TermsOfService: React.FC = () => {
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2"></span>
-                        <span>If you lose access to the account, you must notify Krishna Valostore support immediately.</span>
+                        <span>If you lose access to the account, you must notify UwU Valostore support immediately.</span>
                     </li>
                 </ul>
             </div>
@@ -138,7 +138,7 @@ const TermsOfService: React.FC = () => {
                 <h2 className="text-xl font-bold text-white uppercase tracking-wider">6. Limitation of Liability</h2>
             </div>
             <p className="pl-11 text-sm md:text-base text-slate-400">
-                Krishna Valostore is not responsible for any technical issues related to Riot Games, Valorant servers, or your internet connection. We provide the account "as is" for the duration of the rental.
+                UwU Valostore is not responsible for any technical issues related to Riot Games, Valorant servers, or your internet connection. We provide the account "as is" for the duration of the rental.
             </p>
         </section>
 

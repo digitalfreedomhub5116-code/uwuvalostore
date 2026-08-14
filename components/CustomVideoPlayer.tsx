@@ -178,7 +178,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ src, poster, titl
           onClick={togglePlay}
           className="absolute inset-0 flex items-center justify-center z-10 bg-black/40 backdrop-blur-[2px] transition-all hover:bg-black/30"
         >
-          <div className="w-20 h-20 rounded-full bg-brand-accent/90 flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(255,70,85,0.6)] transform transition-transform hover:scale-110">
+          <div className="w-20 h-20 rounded-full bg-brand-accent/90 flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(232,67,147,0.6)] transform transition-transform hover:scale-110">
             <Play className="w-8 h-8 text-white fill-white" />
           </div>
         </button>
@@ -210,7 +210,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ src, poster, titl
                style={{ width: `${(currentTime / duration) * 100}%` }}
              >
                {/* Glow effect at tip */}
-               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-brand-accent rounded-full shadow-[0_0_10px_rgba(255,70,85,1)] scale-0 group-hover/seek:scale-100 transition-transform"></div>
+               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-brand-accent rounded-full shadow-[0_0_10px_rgba(232,67,147,1)] scale-0 group-hover/seek:scale-100 transition-transform"></div>
              </div>
           </div>
           <input

@@ -130,7 +130,7 @@ const AdminEditAccount: React.FC = () => {
            <button 
              onClick={handleSave}
              disabled={saving}
-             className="flex-1 md:flex-none px-8 py-3 bg-brand-accent hover:bg-red-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/20"
+             className="flex-1 md:flex-none px-8 py-3 bg-brand-accent hover:bg-pink-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/20"
            >
              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
              Save Changes
@@ -270,7 +270,7 @@ const AdminEditAccount: React.FC = () => {
                />
                <button 
                  onClick={addSkin}
-                 className="px-6 py-2 bg-brand-cyan text-brand-dark font-bold rounded-lg hover:bg-cyan-400 transition-colors"
+                 className="px-6 py-2 bg-brand-cyan text-brand-dark font-bold rounded-lg hover:bg-purple-400 transition-colors"
                >
                  Add
                </button>
@@ -278,7 +278,7 @@ const AdminEditAccount: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                {account.skins.map((skin, idx) => (
-                 <div key={idx} className={`flex justify-between items-center bg-brand-dark border p-3 rounded-lg group transition-all ${skin.isHighlighted ? 'border-brand-cyan/50 shadow-[0_0_10px_rgba(0,240,255,0.1)]' : 'border-white/5'}`}>
+                 <div key={idx} className={`flex justify-between items-center bg-brand-dark border p-3 rounded-lg group transition-all ${skin.isHighlighted ? 'border-brand-cyan/50 shadow-[0_0_10px_rgba(168,85,247,0.1)]' : 'border-white/5'}`}>
                     <div className="flex items-center gap-2 truncate">
                        <button 
                         onClick={() => toggleSkinHighlight(idx)}

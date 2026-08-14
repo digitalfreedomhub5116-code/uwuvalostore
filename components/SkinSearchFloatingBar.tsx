@@ -91,14 +91,14 @@ const SkinSearchFloatingBar: React.FC<SkinSearchFloatingBarProps> = ({ isHomePag
                         ${isFocused 
                             ? 'w-full ring-2 ring-brand-cyan/40 py-3 md:py-5 px-4 md:px-7 border-brand-cyan/40' 
                             : mode === 'hero'
-                                ? 'w-full md:w-[320px] py-3 md:py-4 px-4 md:px-6 border-white/10 hover:border-brand-accent/40 hover:shadow-[0_0_25px_rgba(255,70,85,0.3)]'
+                                ? 'w-full md:w-[320px] py-3 md:py-4 px-4 md:px-6 border-white/10 hover:border-brand-accent/40 hover:shadow-[0_0_25px_rgba(232,67,147,0.3)]'
                                 : 'w-[40px] h-[40px] md:w-[44px] md:h-[44px] py-0 px-0 justify-center hover:bg-white/10 border-white/5 bg-black/40'
                         }
                     `}
                 >
                     {/* Cyber Grid Pattern Background (Visible when focused) */}
                     <div className={`absolute inset-0 opacity-10 pointer-events-none transition-opacity duration-700 ${isFocused ? 'opacity-20' : 'opacity-0'}`} 
-                         style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #00f0ff 1px, transparent 0)', backgroundSize: '16px 16px' }} />
+                         style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #a855f7 1px, transparent 0)', backgroundSize: '16px 16px' }} />
 
                     {/* Search Icon */}
                     <div className={`flex items-center justify-center transition-all duration-[850ms] ${isFocused ? 'mr-3 md:mr-5 scale-110 rotate-90' : (mode === 'hero' ? 'mr-2 md:mr-3 rotate-0' : 'mr-0 rotate-0')}`}>
@@ -141,7 +141,7 @@ const SkinSearchFloatingBar: React.FC<SkinSearchFloatingBarProps> = ({ isHomePag
                         {isFocused && (
                             <button 
                                 type="submit"
-                                className="bg-brand-cyan hover:bg-white text-brand-darker rounded-full p-2 md:p-2.5 shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all hover:scale-110 active:scale-95"
+                                className="bg-brand-cyan hover:bg-white text-brand-darker rounded-full p-2 md:p-2.5 shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all hover:scale-110 active:scale-95"
                             >
                                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} />
                             </button>

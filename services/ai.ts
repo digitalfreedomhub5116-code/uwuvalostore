@@ -19,7 +19,7 @@ export const AIService = {
     const ai = new GoogleGenAI({ apiKey });
     
     const prompt = `
-      You are a specialized Transaction Auditor for Krishna Valo Store. 
+      You are a specialized Transaction Auditor for UwU Valo Store. 
       Analyze the provided bank history/SMS logs.
       
       PENDING LIST: ${JSON.stringify(pendingUtrs)}

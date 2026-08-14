@@ -75,7 +75,7 @@ const Browse: React.FC = () => {
                  </h1>
                  <button 
                    onClick={clearSearch}
-                   className="p-1.5 bg-white/10 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-full transition-colors"
+                   className="p-1.5 bg-white/10 hover:bg-pink-500/20 text-slate-400 hover:text-pink-400 rounded-full transition-colors"
                    title="Clear Search"
                  >
                    <X className="w-5 h-5" />
@@ -164,7 +164,7 @@ const Browse: React.FC = () => {
                     {searchQuery && (
                         <button 
                             onClick={clearSearch}
-                            className="px-6 py-2 bg-brand-accent hover:bg-red-600 text-white font-bold rounded-lg transition-colors text-sm uppercase tracking-wide"
+                            className="px-6 py-2 bg-brand-accent hover:bg-pink-600 text-white font-bold rounded-lg transition-colors text-sm uppercase tracking-wide"
                         >
                             Clear Search
                         </button>

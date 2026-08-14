@@ -259,7 +259,7 @@ const UserDashboard: React.FC = () => {
                  <p className="text-slate-400 text-sm mb-6">Ready to dominate the lobby? Rent a premium ID now.</p>
                  <button 
                    onClick={() => navigate('/browse')}
-                   className="px-6 py-3 bg-brand-accent hover:bg-red-600 text-white font-bold rounded-lg transition-colors inline-flex items-center gap-2"
+                   className="px-6 py-3 bg-brand-accent hover:bg-pink-600 text-white font-bold rounded-lg transition-colors inline-flex items-center gap-2"
                  >
                    Browse Inventory <ChevronRight className="w-4 h-4" />
                  </button>
@@ -347,7 +347,7 @@ const UserDashboard: React.FC = () => {
                                   <button 
                                       type="submit" 
                                       disabled={!newMessage.trim()}
-                                      className="p-2.5 bg-brand-accent text-white rounded-full hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                      className="p-2.5 bg-brand-accent text-white rounded-full hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                   >
                                       <Send size={18} />
                                   </button>
@@ -425,7 +425,7 @@ const UserDashboard: React.FC = () => {
                      {incomingRequests.map(req => {
                         const isPending = req.status === BookingStatus.PENDING;
                         return (
-                           <div key={req.orderId} className={`bg-brand-surface border rounded-xl p-5 ${isPending ? 'border-brand-accent/50 shadow-[0_0_15px_rgba(255,70,85,0.1)]' : 'border-white/10 opacity-75 hover:opacity-100 transition-opacity'}`}>
+                           <div key={req.orderId} className={`bg-brand-surface border rounded-xl p-5 ${isPending ? 'border-brand-accent/50 shadow-[0_0_15px_rgba(232,67,147,0.1)]' : 'border-white/10 opacity-75 hover:opacity-100 transition-opacity'}`}>
                               <div className="flex justify-between items-start mb-4">
                                  <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-brand-dark border border-white/10 flex items-center justify-center">
@@ -741,7 +741,7 @@ const UserDashboard: React.FC = () => {
                />
                <div className="flex gap-3">
                   <button onClick={() => setEditingPasswordId(null)} className="flex-1 py-3 border border-white/10 rounded-lg text-slate-400 hover:text-white font-bold text-xs uppercase">Cancel</button>
-                  <button onClick={handleSavePassword} className="flex-1 py-3 bg-brand-accent hover:bg-red-600 rounded-lg text-white font-bold text-xs uppercase shadow-lg">Save</button>
+                  <button onClick={handleSavePassword} className="flex-1 py-3 bg-brand-accent hover:bg-pink-600 rounded-lg text-white font-bold text-xs uppercase shadow-lg">Save</button>
                </div>
             </div>
          </div>,
@@ -835,7 +835,7 @@ const RentalCard: React.FC<{ booking: Booking, showCredentials?: boolean }> = ({
   const startDisplay = `${startDateObj.toLocaleDateString()} ${startDateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
 
   return (
-    <div className={`bg-brand-surface border rounded-xl overflow-hidden relative group transition-all duration-300 ${bookingState === 'ACTIVE' ? 'border-brand-accent/50 shadow-[0_0_20px_rgba(255,70,85,0.1)]' : 'border-white/10'}`}>
+    <div className={`bg-brand-surface border rounded-xl overflow-hidden relative group transition-all duration-300 ${bookingState === 'ACTIVE' ? 'border-brand-accent/50 shadow-[0_0_20px_rgba(232,67,147,0.1)]' : 'border-white/10'}`}>
       
       {/* Progress Bar (Only for Active) */}
       <div className="h-1 bg-gray-800 w-full">

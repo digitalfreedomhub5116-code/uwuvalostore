@@ -60,7 +60,7 @@ const ProcedureSection = memo(({ config }: { config: HomeConfig }) => {
             <div className="flex items-center justify-center gap-4"><div className="h-[1px] w-12 md:w-24 bg-brand-cyan/30"></div><p className="text-slate-500 font-mono uppercase tracking-[0.6em] text-[10px] md:text-sm">Protocol // System Sync: {Math.round(scrollProgress * 100)}%</p><div className="h-[1px] w-12 md:w-24 bg-brand-cyan/30"></div></div>
           </div>
           <div className="relative">
-            <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-px md:w-1 bg-white/5 rounded-full overflow-hidden"><div className="absolute top-0 left-0 w-full bg-gradient-to-b from-brand-cyan via-brand-accent to-brand-secondary shadow-[0_0_20px_#00f0ff] transition-all duration-300 ease-linear" style={{ height: `${scrollProgress * 100}%`, willChange: 'height' }}><div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 md:w-6 md:h-6 bg-white rounded-full blur-[4px] md:blur-[10px] animate-pulse"></div></div></div>
+            <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-px md:w-1 bg-white/5 rounded-full overflow-hidden"><div className="absolute top-0 left-0 w-full bg-gradient-to-b from-brand-cyan via-brand-accent to-brand-secondary shadow-[0_0_20px_#a855f7] transition-all duration-300 ease-linear" style={{ height: `${scrollProgress * 100}%`, willChange: 'height' }}><div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 md:w-6 md:h-6 bg-white rounded-full blur-[4px] md:blur-[10px] animate-pulse"></div></div></div>
             <div className="relative space-y-4 md:space-y-0">
               {(config.stepItems || []).map((step, idx) => {
                 const Icon = STEP_ICONS[idx] || Gamepad2;
@@ -70,11 +70,11 @@ const ProcedureSection = memo(({ config }: { config: HomeConfig }) => {
                 return (
                   <div key={idx} className={`flex items-center justify-center w-full py-6 md:py-12 transition-all duration-1000 ${isActive ? 'opacity-100' : 'opacity-10'}`}>
                     <div className={`w-[calc(50%-2rem)] md:w-1/2 pr-6 md:pr-16 text-right transition-all duration-1000 transform-gpu ${isEven ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0 pointer-events-none'}`}>
-                       {isEven && <div className="space-y-2 md:space-y-4"><span className="text-3xl md:text-6xl font-display font-black italic text-brand-cyan drop-shadow-[0_0_10px_#00f0ff]">0{idx + 1}</span><h3 className="text-base md:text-4xl font-display font-black uppercase text-white tracking-tight leading-none">{step.title}</h3><p className="text-[10px] md:text-lg text-slate-400 font-light leading-snug">{step.desc}</p></div>}
+                       {isEven && <div className="space-y-2 md:space-y-4"><span className="text-3xl md:text-6xl font-display font-black italic text-brand-cyan drop-shadow-[0_0_10px_#a855f7]">0{idx + 1}</span><h3 className="text-base md:text-4xl font-display font-black uppercase text-white tracking-tight leading-none">{step.title}</h3><p className="text-[10px] md:text-lg text-slate-400 font-light leading-snug">{step.desc}</p></div>}
                     </div>
-                    <div className="relative z-20 flex-shrink-0"><div className={`w-12 h-12 md:w-24 md:h-24 rounded-full border-2 transition-all duration-700 flex items-center justify-center bg-black ${isActive ? 'border-brand-cyan shadow-[0_0_40px_rgba(0,240,255,0.4)] scale-110' : 'border-white/10 scale-90'}`}>{isActive && <div className="absolute inset-0 rounded-full border-2 border-brand-cyan/20 animate-ping"></div>}<Icon className={`w-5 h-5 md:w-12 md:h-12 transition-all duration-700 ${isActive ? 'text-brand-cyan scale-110' : 'text-slate-800'}`} /></div></div>
+                    <div className="relative z-20 flex-shrink-0"><div className={`w-12 h-12 md:w-24 md:h-24 rounded-full border-2 transition-all duration-700 flex items-center justify-center bg-black ${isActive ? 'border-brand-cyan shadow-[0_0_40px_rgba(168,85,247,0.4)] scale-110' : 'border-white/10 scale-90'}`}>{isActive && <div className="absolute inset-0 rounded-full border-2 border-brand-cyan/20 animate-ping"></div>}<Icon className={`w-5 h-5 md:w-12 md:h-12 transition-all duration-700 ${isActive ? 'text-brand-cyan scale-110' : 'text-slate-800'}`} /></div></div>
                     <div className={`w-[calc(50%-2rem)] md:w-1/2 pl-6 md:pl-16 text-left transition-all duration-1000 transform-gpu ${!isEven ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0 pointer-events-none'}`}>
-                       {!isEven && <div className="space-y-2 md:space-y-4"><span className="text-3xl md:text-6xl font-display font-black italic text-brand-accent drop-shadow-[0_0_10px_#ff4655]">0{idx + 1}</span><h3 className="text-base md:text-4xl font-display font-black uppercase text-white tracking-tight leading-none">{step.title}</h3><p className="text-[10px] md:text-lg text-slate-400 font-light leading-snug">{step.desc}</p></div>}
+                       {!isEven && <div className="space-y-2 md:space-y-4"><span className="text-3xl md:text-6xl font-display font-black italic text-brand-accent drop-shadow-[0_0_10px_#e84393]">0{idx + 1}</span><h3 className="text-base md:text-4xl font-display font-black uppercase text-white tracking-tight leading-none">{step.title}</h3><p className="text-[10px] md:text-lg text-slate-400 font-light leading-snug">{step.desc}</p></div>}
                     </div>
                   </div>
                 );
@@ -215,8 +215,8 @@ const Home: React.FC = () => {
 
         <div className="relative z-30 text-center px-4 max-w-5xl mx-auto flex flex-col items-center md:pt-48">
           <div className="md:hidden mb-6 md:mb-10 inline-flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-1.5 md:py-2 rounded-full border border-white/10 bg-black/60 backdrop-blur-2xl animate-reveal-up shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-             <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-brand-cyan animate-pulse shadow-[0_0_15px_#00f0ff]"></div>
-             <span className="text-[10px] md:text-[13px] font-bold tracking-[0.2em] md:tracking-[0.5em] text-white">KRISHNA VALO // SECURE RENTALS</span>
+             <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-brand-cyan animate-pulse shadow-[0_0_15px_#a855f7]"></div>
+             <span className="text-[10px] md:text-[13px] font-bold tracking-[0.2em] md:tracking-[0.5em] text-white">UWU VALO // SECURE RENTALS</span>
           </div>
 
           <div key={`title-${currentSlide}`} className="space-y-6 md:space-y-10 perspective-1000">
@@ -231,7 +231,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="mt-12 md:mt-16 flex flex-col sm:flex-row gap-6 md:gap-10 justify-center items-center animate-reveal-up" style={{ animationDelay: '0.5s' }}>
-            <Link to="/browse" className={`relative overflow-hidden group/btn px-3 py-3.5 md:px-12 md:py-7 ${config.heroSlides?.[currentSlide]?.buttonColor || 'bg-brand-accent'} font-black rounded-none skew-x-[-12deg] uppercase tracking-[0.3em] md:tracking-[0.4em] transition-all shadow-[0_0_50px_rgba(0,0,0,0.6)] hover:shadow-[0_0_70px_rgba(255,70,85,0.4)] hover:scale-105 active:scale-95 flex items-center gap-3 md:gap-4`}>
+            <Link to="/browse" className={`relative overflow-hidden group/btn px-3 py-3.5 md:px-12 md:py-7 ${config.heroSlides?.[currentSlide]?.buttonColor || 'bg-brand-accent'} font-black rounded-none skew-x-[-12deg] uppercase tracking-[0.3em] md:tracking-[0.4em] transition-all shadow-[0_0_50px_rgba(0,0,0,0.6)] hover:shadow-[0_0_70px_rgba(232,67,147,0.4)] hover:scale-105 active:scale-95 flex items-center gap-3 md:gap-4`}>
               <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full h-full animate-shimmer opacity-25 pointer-events-none"></div>
               <div className="skew-x-[12deg] relative z-10 flex items-center gap-3 md:gap-4 text-white text-sm md:text-2xl">
                 START OPERATION <ChevronRight className="w-4 h-4 md:w-8 md:h-8 group-hover/btn:translate-x-3 transition-transform duration-500" />
@@ -400,7 +400,7 @@ const Home: React.FC = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
                           
                           <div className="absolute inset-0 flex items-center justify-center opacity-100 transition-all duration-500">
-                              <div className={`rounded-full backdrop-blur-md flex items-center justify-center shadow-2xl w-20 h-20 bg-brand-accent/20 border border-brand-accent/50 shadow-[0_0_50px_rgba(255,70,85,0.4)]`}>
+                              <div className={`rounded-full backdrop-blur-md flex items-center justify-center shadow-2xl w-20 h-20 bg-brand-accent/20 border border-brand-accent/50 shadow-[0_0_50px_rgba(232,67,147,0.4)]`}>
                                  <Play className="fill-white ml-1 w-8 h-8 text-white" />
                               </div>
                           </div>
@@ -423,7 +423,7 @@ const Home: React.FC = () => {
                     <button 
                        key={idx}
                        onClick={() => setMobileVideoIndex(idx)}
-                       className={`h-1.5 rounded-full transition-all duration-500 ${idx === mobileVideoIndex ? 'w-8 bg-brand-accent shadow-[0_0_10px_#ff4655]' : 'w-1.5 bg-white/20'}`}
+                       className={`h-1.5 rounded-full transition-all duration-500 ${idx === mobileVideoIndex ? 'w-8 bg-brand-accent shadow-[0_0_10px_#e84393]' : 'w-1.5 bg-white/20'}`}
                     />
                  ))}
               </div>
@@ -452,7 +452,7 @@ const Home: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 group-hover:opacity-60 transition-opacity"></div>
                       
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform scale-90 group-hover:scale-100">
-                          <div className={`rounded-full backdrop-blur-md flex items-center justify-center shadow-2xl w-16 h-16 bg-brand-accent/20 border border-brand-accent/50 shadow-[0_0_30px_rgba(255,70,85,0.3)]`}>
+                          <div className={`rounded-full backdrop-blur-md flex items-center justify-center shadow-2xl w-16 h-16 bg-brand-accent/20 border border-brand-accent/50 shadow-[0_0_30px_rgba(232,67,147,0.3)]`}>
                              <Play className="fill-white ml-1 w-6 h-6 text-white" />
                           </div>
                       </div>
@@ -477,7 +477,7 @@ const Home: React.FC = () => {
       {selectedVideo && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-2xl animate-in fade-in duration-500 p-4">
           {/* Vertical Video Container */}
-          <div className="relative h-[80vh] w-auto aspect-[9/16] rounded-2xl border border-brand-accent/50 bg-black shadow-[0_0_100px_rgba(255,70,85,0.2)] overflow-hidden">
+          <div className="relative h-[80vh] w-auto aspect-[9/16] rounded-2xl border border-brand-accent/50 bg-black shadow-[0_0_100px_rgba(232,67,147,0.2)] overflow-hidden">
              <CustomVideoPlayer 
                 src={selectedVideo.videoUrl!} 
                 poster={selectedVideo.thumbnail} 
@@ -491,7 +491,7 @@ const Home: React.FC = () => {
       <section className="py-32 md:py-48 bg-brand-darker relative overflow-hidden transform-gpu">
         <div className="absolute inset-0 bg-brand-accent/5"></div>
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-accent to-transparent opacity-40"></div>
-        <div className="max-w-5xl mx-auto text-center px-4 relative z-10"><div className="animate-on-scroll reveal-up space-y-12"><h2 className="text-6xl md:text-9xl font-display font-black text-white uppercase tracking-tighter leading-[0.85]">{config.cta?.titleLine1} <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-brand-secondary glitch-text" data-text={config.cta?.titleLine2}>{config.cta?.titleLine2}</span></h2><p className="text-slate-400 text-xl md:text-2xl font-light tracking-wide max-w-3xl mx-auto leading-relaxed">{config.cta?.subtitle}</p><Link to="/browse" className="inline-block relative px-3 py-4 md:px-12 md:py-8 bg-white hover:bg-brand-cyan text-brand-darker font-black text-sm md:text-2xl skew-x-[-12deg] transition-all hover:scale-110 shadow-[0_0_60px_rgba(255,255,255,0.2)] hover:shadow-[0_0_80px_rgba(0,240,255,0.4)] active:scale-95 uppercase tracking-[0.3em] md:tracking-[0.4em]"><div className="skew-x-[12deg] flex items-center gap-3 md:gap-4">{config.cta?.buttonText} <ArrowRight className="w-5 h-5 md:w-8 md:h-8" /></div></Link></div></div>
+        <div className="max-w-5xl mx-auto text-center px-4 relative z-10"><div className="animate-on-scroll reveal-up space-y-12"><h2 className="text-6xl md:text-9xl font-display font-black text-white uppercase tracking-tighter leading-[0.85]">{config.cta?.titleLine1} <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-brand-secondary glitch-text" data-text={config.cta?.titleLine2}>{config.cta?.titleLine2}</span></h2><p className="text-slate-400 text-xl md:text-2xl font-light tracking-wide max-w-3xl mx-auto leading-relaxed">{config.cta?.subtitle}</p><Link to="/browse" className="inline-block relative px-3 py-4 md:px-12 md:py-8 bg-white hover:bg-brand-cyan text-brand-darker font-black text-sm md:text-2xl skew-x-[-12deg] transition-all hover:scale-110 shadow-[0_0_60px_rgba(255,255,255,0.2)] hover:shadow-[0_0_80px_rgba(168,85,247,0.4)] active:scale-95 uppercase tracking-[0.3em] md:tracking-[0.4em]"><div className="skew-x-[12deg] flex items-center gap-3 md:gap-4">{config.cta?.buttonText} <ArrowRight className="w-5 h-5 md:w-8 md:h-8" /></div></Link></div></div>
       </section>
     </div>
   );

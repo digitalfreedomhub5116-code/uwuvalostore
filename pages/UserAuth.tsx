@@ -66,7 +66,7 @@ const UserAuth: React.FC = () => {
             <div className="text-center mb-8">
                 <div className="relative inline-block mb-4 group">
                    <div className="absolute inset-0 bg-brand-accent blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                   <div className="relative p-4 rounded-2xl bg-brand-surface border border-white/10 shadow-[0_0_30px_rgba(255,70,85,0.15)]">
+                   <div className="relative p-4 rounded-2xl bg-brand-surface border border-white/10 shadow-[0_0_30px_rgba(232,67,147,0.15)]">
                       <img src={SITE_LOGO_URL} alt="Logo" className="w-10 h-10 object-contain" />
                    </div>
                 </div>
@@ -162,7 +162,7 @@ const UserAuth: React.FC = () => {
                   <button 
                       type="submit"
                       disabled={loading}
-                      className="w-full relative group bg-white hover:bg-brand-accent text-brand-darker hover:text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,70,85,0.4)] hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none mt-6"
+                      className="w-full relative group bg-white hover:bg-brand-accent text-brand-darker hover:text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(232,67,147,0.4)] hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none mt-6"
                   >
                       {loading ? (
                           <>
@@ -181,7 +181,7 @@ const UserAuth: React.FC = () => {
                 {/* Toggle Register/Login */}
                 <div className="text-center mt-6 pt-4 border-t border-white/5">
                   <p className="text-sm text-slate-400">
-                    {isRegistering ? "Already have an ID?" : "New to Krishna Valo?"}
+                    {isRegistering ? "Already have an ID?" : "New to UwU Valo?"}
                     <button 
                       onClick={() => {
                         setIsRegistering(!isRegistering);

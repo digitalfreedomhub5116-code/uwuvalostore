@@ -156,7 +156,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <Shield className="w-6 h-6 md:w-8 md:h-8 text-brand-accent fill-transparent stroke-[2px]" />
               <div>
                  <h1 className="font-display font-black text-xl md:text-2xl tracking-tighter uppercase italic leading-none text-white">
-                    KRISHNA <span className="text-brand-accent">VALO STORE</span>
+                    UWU <span className="text-brand-accent">VALO STORE</span>
                  </h1>
               </div>
               {/* Tooltip */}
@@ -257,7 +257,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                <div className="col-span-1 md:col-span-2">
                   <Link to="/" className="flex items-center gap-3 mb-6">
                      <img src={SITE_LOGO_URL} alt="" className="w-8 h-8 opacity-80 grayscale" />
-                     <span className="font-display font-black text-xl text-white uppercase italic tracking-wide">Krishna <span className="text-brand-accent">Valo</span></span>
+                     <span className="font-display font-black text-xl text-white uppercase italic tracking-wide">UwU <span className="text-brand-accent">Valo</span></span>
                   </Link>
                   <p className="text-slate-500 text-sm leading-relaxed max-w-sm mb-6">
                      India's premier Valorant account rental platform. Verified skins, ranked ready, and instant delivery via automated protocols.
@@ -287,7 +287,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             
             <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
                <div className="text-[10px] text-slate-600 font-mono uppercase tracking-widest">
-                  © 2024 Krishna Valo Store. All Rights Reserved.
+                  © 2024 UwU Valo Store. All Rights Reserved.
                </div>
                <div className="flex items-center gap-6">
                   <Link to="/admin" className="text-[10px] text-slate-800 hover:text-brand-accent font-mono uppercase tracking-widest transition-colors">
@@ -300,7 +300,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
       {/* MOBILE FLOATING BOTTOM NAVIGATION (Replica from Image) */}
       <div className="md:hidden fixed bottom-6 left-6 right-6 z-50 animate-reveal-up">
-        <div className="bg-[#0f1219]/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] flex justify-between items-center px-4 py-2 ring-1 ring-white/5 animate-nav-float">
+        <div className="bg-[#0d0518]/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] flex justify-between items-center px-4 py-2 ring-1 ring-white/5 animate-nav-float">
            
            {mobileNavItems.map((item, idx) => {
              const active = isActive(item.path);
@@ -313,7 +313,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   <div className={`
                     relative flex items-center justify-center transition-all duration-300
                     ${active 
-                       ? 'w-12 h-12 bg-brand-accent rounded-full shadow-[0_0_20px_rgba(255,70,85,0.5)] -translate-y-2 border-4 border-[#020617]' 
+                       ? 'w-12 h-12 bg-brand-accent rounded-full shadow-[0_0_20px_rgba(232,67,147,0.5)] -translate-y-2 border-4 border-[#0a0012]' 
                        : 'w-10 h-10 text-slate-500'
                     }
                   `}>

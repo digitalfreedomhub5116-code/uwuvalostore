@@ -28,7 +28,7 @@ const RefundPolicy: React.FC = () => {
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-accent rounded-l-2xl"></div>
             <ShieldAlert className="w-8 h-8 text-brand-accent shrink-0 mt-1" />
             <p className="text-sm md:text-base">
-                At <strong>Krishna Valostore</strong>, we provide premium Valorant account rentals. Because our services involve the immediate delivery of digital login credentials, we maintain a strict refund policy to ensure the security and integrity of our accounts. <br/><br/>
+                At <strong>UwU Valostore</strong>, we provide premium Valorant account rentals. Because our services involve the immediate delivery of digital login credentials, we maintain a strict refund policy to ensure the security and integrity of our accounts. <br/><br/>
                 Please read this policy carefully before completing your rental.
             </p>
         </div>
@@ -42,7 +42,7 @@ const RefundPolicy: React.FC = () => {
                 <h2 className="text-xl font-bold text-white uppercase tracking-wider">1. All Rentals are Final</h2>
             </div>
             <p className="pl-11 text-sm md:text-base text-slate-400">
-                By purchasing a rental period from Krishna Valostore, you acknowledge and agree that all sales are final. Once the account credentials (username and password) have been sent to you via email, WhatsApp, or our automated system, no refunds will be issued under any circumstances.
+                By purchasing a rental period from UwU Valostore, you acknowledge and agree that all sales are final. Once the account credentials (username and password) have been sent to you via email, WhatsApp, or our automated system, no refunds will be issued under any circumstances.
             </p>
         </section>
 
@@ -130,7 +130,7 @@ const RefundPolicy: React.FC = () => {
                 <h2 className="text-xl font-bold text-white uppercase tracking-wider">5. Chargebacks</h2>
             </div>
             <p className="pl-11 text-sm md:text-base text-slate-400 bg-brand-dark p-4 rounded-xl border border-white/5">
-                Any attempt to initiate a chargeback or dispute a payment through your bank or payment gateway will result in a permanent ban from Krishna Valostore and any associated partner stores. We will provide this signed policy to the payment processor as evidence of our "No Refund" agreement.
+                Any attempt to initiate a chargeback or dispute a payment through your bank or payment gateway will result in a permanent ban from UwU Valostore and any associated partner stores. We will provide this signed policy to the payment processor as evidence of our "No Refund" agreement.
             </p>
         </section>
       </div>
@@ -139,7 +139,7 @@ const RefundPolicy: React.FC = () => {
          <p className="text-slate-500 text-xs uppercase tracking-widest mb-4">Policy Last Updated: December 2024</p>
          <div className="flex items-center justify-center gap-2">
             <div className="w-2 h-2 rounded-full bg-brand-accent"></div>
-            <span className="text-white font-bold text-sm">Krishna Valostore Management</span>
+            <span className="text-white font-bold text-sm">UwU Valostore Management</span>
          </div>
       </div>
     </div>

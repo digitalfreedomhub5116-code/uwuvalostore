@@ -51,7 +51,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
     <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden font-sans">
         {/* Background Grid Pattern */}
         <div className="absolute inset-0 opacity-20 pointer-events-none" 
-             style={{ backgroundImage: 'linear-gradient(#1a1a1a 1px, transparent 1px), linear-gradient(90deg, #1a1a1a 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+             style={{ backgroundImage: 'linear-gradient(#1a0a2e 1px, transparent 1px), linear-gradient(90deg, #1a0a2e 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
         </div>
 
         {/* Scanline Overlay */}
@@ -70,8 +70,8 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-3 tracking-widest glitch-text text-center" data-text="KRISHNA VALO STORE">
-                KRISHNA VALO STORE
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-3 tracking-widest glitch-text text-center" data-text="UWU VALO STORE">
+                UWU VALO STORE
             </h1>
 
             {/* New Tagline - India's #1 Platform - Mobile Responsive Updates */}
@@ -90,7 +90,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             {/* Progress Bar Container */}
             <div className="w-full h-1.5 bg-gray-900 rounded-none overflow-hidden relative mb-4 border border-white/10 skew-x-[-20deg]">
                 <div 
-                    className="h-full bg-brand-accent relative transition-all duration-200 ease-out shadow-[0_0_15px_#ff4655]"
+                    className="h-full bg-brand-accent relative transition-all duration-200 ease-out shadow-[0_0_15px_#e84393]"
                     style={{ width: `${progress}%` }}
                 >
                     <div className="absolute right-0 top-0 h-full w-4 bg-white/80 blur-[2px]"></div>

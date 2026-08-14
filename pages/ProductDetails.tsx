@@ -110,7 +110,7 @@ const ProductDetails: React.FC = () => {
                        onClick={() => setViewingSkin(s)}
                        className={`p-3 rounded-xl text-xs border text-left flex items-center gap-2 transition-all hover:scale-[1.02] hover:shadow-lg
                          ${s.isHighlighted 
-                           ? 'bg-brand-cyan/10 border-brand-cyan/30 text-brand-cyan font-bold shadow-[0_0_10px_rgba(0,240,255,0.1)] hover:bg-brand-cyan/20' 
+                           ? 'bg-brand-cyan/10 border-brand-cyan/30 text-brand-cyan font-bold shadow-[0_0_10px_rgba(168,85,247,0.1)] hover:bg-brand-cyan/20' 
                            : 'bg-brand-dark/50 border-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                          }
                          ${s.imageUrl ? 'cursor-pointer' : 'cursor-default'}
@@ -223,7 +223,7 @@ const ProductDetails: React.FC = () => {
       {/* Skin Preview Modal */}
       {viewingSkin && createPortal(
          <div className="fixed inset-0 z-[200] bg-black/98 flex items-center justify-center p-4 animate-in fade-in duration-300" onClick={() => setViewingSkin(null)}>
-            <div className="relative max-w-5xl w-full max-h-[90vh] bg-brand-surface border border-white/10 rounded-2xl overflow-hidden flex flex-col shadow-[0_0_150px_rgba(0,240,255,0.1)]" onClick={e => e.stopPropagation()}>
+            <div className="relative max-w-5xl w-full max-h-[90vh] bg-brand-surface border border-white/10 rounded-2xl overflow-hidden flex flex-col shadow-[0_0_150px_rgba(168,85,247,0.1)]" onClick={e => e.stopPropagation()}>
                <div className="absolute top-4 right-4 z-10">
                   <button onClick={() => setViewingSkin(null)} className="p-2 bg-black/50 hover:bg-white hover:text-black rounded-full text-white transition-colors">
                      <X size={24} />

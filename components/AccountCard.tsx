@@ -77,7 +77,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ account }) => {
   const skinCount = account.totalSkins || account.skins.length;
 
   return (
-    <div className={`group relative rounded-none overflow-hidden border transition-all duration-300 ${isEffectivelyAvailable ? 'border-white/10 bg-brand-surface hover:border-brand-accent/50 hover:shadow-[0_0_30px_rgba(255,70,85,0.15)] hover:-translate-y-2' : 'border-white/5 bg-brand-dark opacity-90'}`}>
+    <div className={`group relative rounded-none overflow-hidden border transition-all duration-300 ${isEffectivelyAvailable ? 'border-white/10 bg-brand-surface hover:border-brand-accent/50 hover:shadow-[0_0_30px_rgba(232,67,147,0.15)] hover:-translate-y-2' : 'border-white/5 bg-brand-dark opacity-90'}`}>
       
       <Link to={`/account/${account.id}`} className="block h-full">
         {/* Corner Accents (Cyberpunk Style) */}
@@ -115,7 +115,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ account }) => {
               </span>
             ) : (
               <div className="flex flex-col items-end gap-1">
-                <span className="inline-flex items-center px-3 py-1 bg-brand-accent/20 backdrop-blur-md border border-brand-accent/50 text-brand-accent text-[9px] font-black uppercase tracking-widest skew-x-[-10deg] shadow-[0_0_15px_rgba(255,70,85,0.3)]">
+                <span className="inline-flex items-center px-3 py-1 bg-brand-accent/20 backdrop-blur-md border border-brand-accent/50 text-brand-accent text-[9px] font-black uppercase tracking-widest skew-x-[-10deg] shadow-[0_0_15px_rgba(232,67,147,0.3)]">
                   <Clock className="w-3 h-3 mr-1.5 animate-pulse" />
                   Opens In
                 </span>
@@ -165,7 +165,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ account }) => {
                   key={idx} 
                   className={`text-[10px] px-2 py-1 border block max-w-[130px] truncate font-mono uppercase transition-all duration-300 flex items-center gap-1
                     ${skin.isHighlighted 
-                        ? 'bg-brand-cyan/10 text-brand-cyan border-brand-cyan/40 shadow-[0_0_10px_rgba(0,240,255,0.2)] font-bold scale-105 z-10' 
+                        ? 'bg-brand-cyan/10 text-brand-cyan border-brand-cyan/40 shadow-[0_0_10px_rgba(168,85,247,0.2)] font-bold scale-105 z-10' 
                         : 'bg-white/5 text-slate-300 border-white/10'
                     }`}
                 >
@@ -210,7 +210,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ account }) => {
           <div
             className={`w-full py-3 px-4 font-bold uppercase tracking-wider text-sm transition-all duration-200 flex items-center justify-center gap-2 skew-x-[-10deg]
               ${isEffectivelyAvailable 
-                ? 'bg-white text-brand-darker group-hover:bg-brand-accent group-hover:text-white shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(255,70,85,0.4)]' 
+                ? 'bg-white text-brand-darker group-hover:bg-brand-accent group-hover:text-white shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(232,67,147,0.4)]' 
                 : 'bg-slate-800 text-slate-400 border border-white/5 hover:bg-slate-700'}`}
           >
             <div className="skew-x-[10deg] flex items-center gap-2">

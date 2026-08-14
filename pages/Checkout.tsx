@@ -88,7 +88,7 @@ const Checkout: React.FC = () => {
 
   // Construct UPI URI with amount and order ID
   // tn (Transaction Note) is critical here - it puts the Order ID in the bank statement for the admin
-  const upiString = `upi://pay?pa=${UPI_ID}&pn=KrishnaValo&am=${finalPrice.toFixed(2)}&cu=INR&tn=${orderId}`;
+  const upiString = `upi://pay?pa=${UPI_ID}&pn=UwUValo&am=${finalPrice.toFixed(2)}&cu=INR&tn=${orderId}`;
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(upiString)}`;
 
   // --- Coupon Handlers ---
@@ -234,7 +234,7 @@ I have made the payment. Please verify.
       <div className="space-y-6">
 
          {/* SECTION 1: TIMER */}
-         <div className="bg-brand-surface border border-brand-accent/30 rounded-xl p-4 flex items-center justify-between shadow-[0_0_15px_rgba(255,70,85,0.1)]">
+         <div className="bg-brand-surface border border-brand-accent/30 rounded-xl p-4 flex items-center justify-between shadow-[0_0_15px_rgba(232,67,147,0.1)]">
              <div className="flex items-center gap-2 text-brand-accent">
                <Timer className="w-5 h-5" />
                <span className="font-bold">Session Time</span>
@@ -384,7 +384,7 @@ I have made the payment. Please verify.
              <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 blur-3xl rounded-full pointer-events-none"></div>
 
              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-               <span className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-sm text-white shadow-[0_0_15px_rgba(255,70,85,0.4)]">2</span>
+               <span className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-sm text-white shadow-[0_0_15px_rgba(232,67,147,0.4)]">2</span>
                Make Payment
              </h2>
 
@@ -456,7 +456,7 @@ I have made the payment. Please verify.
 
                         <button 
                           onClick={handleSubmitPayment}
-                          className="w-full bg-brand-accent hover:bg-red-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/20 mt-2"
+                          className="w-full bg-brand-accent hover:bg-pink-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/20 mt-2"
                         >
                           <Send className="w-5 h-5" />
                           VERIFY & BOOK SLOT

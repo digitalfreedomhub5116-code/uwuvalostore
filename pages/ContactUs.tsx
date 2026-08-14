@@ -28,7 +28,7 @@ const ContactUs: React.FC = () => {
         <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/5 blur-[100px] pointer-events-none"></div>
 
         <div className="text-center max-w-2xl mx-auto">
-            <div className="w-20 h-20 bg-brand-dark rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-[0_0_30px_rgba(0,240,255,0.1)]">
+            <div className="w-20 h-20 bg-brand-dark rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-[0_0_30px_rgba(168,85,247,0.1)]">
                 <HelpCircle className="w-10 h-10 text-brand-cyan" />
             </div>
             
@@ -55,7 +55,7 @@ const ContactUs: React.FC = () => {
                     <Mail size={16} className="text-brand-accent" /> Email Support
                 </div>
                 <p className="text-slate-400 text-sm mb-4">For business inquiries or bulk orders.</p>
-                <a href="mailto:support@krishnavalo.store" className="text-brand-accent hover:text-white transition-colors text-sm font-mono">support@krishnavalo.store</a>
+                <a href="mailto:support@uwuvalo.store" className="text-brand-accent hover:text-white transition-colors text-sm font-mono">support@uwuvalo.store</a>
             </div>
             
              <div className="bg-brand-dark p-6 rounded-xl border border-white/5">
