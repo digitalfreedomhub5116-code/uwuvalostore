@@ -158,6 +158,9 @@ const Checkout: React.FC = () => {
               await StorageService.incrementCouponUsage(appliedCoupon.code);
             }
 
+            const isFuture = state.startMode === 'later' && state.scheduledTime && new Date(state.scheduledTime).getTime() > Date.now();
+            const bookingStatus = isFuture ? BookingStatus.PRE_BOOKED : BookingStatus.ACTIVE;
+
             const booking: Booking = {
               orderId,
               accountId: state.account.id,
@@ -167,7 +170,7 @@ const Checkout: React.FC = () => {
               totalPrice: finalPrice,
               startTime: startDateTime.toISOString(),
               endTime: endDateTime.toISOString(),
-              status: BookingStatus.PENDING,
+              status: bookingStatus,
               createdAt: new Date().toISOString(),
               utr: `RZP-${paymentId}`,
               razorpayPaymentId: paymentId,
@@ -183,25 +186,17 @@ const Checkout: React.FC = () => {
               await StorageService.createBooking(booking);
             }
 
-            const timeString = state.startMode === 'later' && state.scheduledTime
-              ? startDateTime.toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-              : 'Immediate';
+            // Lock account automatically in Supabase if active
+            if (bookingStatus === BookingStatus.ACTIVE) {
+              const account = await StorageService.getAccountById(state.account.id);
+              if (account) {
+                account.isBooked = true;
+                account.bookedUntil = endDateTime.toISOString();
+                await StorageService.saveAccount(account);
+              }
+            }
 
-            let message = `
-*RAZORPAY PAYMENT COMPLETE*
----------------------
-*Order ID:* ${orderId}
-*Valorant ID:* ${state.account.name}
-*Duration:* ${state.durationLabel}
-*Price:* ₹${finalPrice}
-*Razorpay Pay ID:* ${paymentId}
-*Start Time:* ${timeString}
----------------------
-I have paid via Razorpay. Please activate my account.
-            `.trim();
-
-            const whatsappUrl = `https://wa.me/919860185116?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+            // Direct redirect to User Dashboard with credentials instantly revealed
             navigate('/dashboard');
           } catch (err: any) {
             setError(err.message || 'Booking save failed after payment.');

@@ -473,6 +473,19 @@ const RentalCard: React.FC<{ booking: Booking, showCredentials?: boolean }> = ({
              </div>
           </div>
         )}
+
+        {/* WhatsApp Support Button */}
+        <div className="mt-4 pt-3 border-t border-white/5 flex justify-end">
+          <button 
+            onClick={() => {
+              const text = `*SUPPORT REQUEST*\nOrder ID: ${booking.orderId}\nAccount: ${booking.accountName}\nStatus: ${booking.status}\nI need assistance with my rental.`;
+              window.open(`https://wa.me/919860185116?text=${encodeURIComponent(text)}`, '_blank');
+            }}
+            className="px-4 py-2 bg-green-600/10 hover:bg-green-600 text-green-400 hover:text-white border border-green-500/20 hover:border-green-500 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all"
+          >
+            <MessageCircle size={14} /> Contact Support on WhatsApp
+          </button>
+        </div>
       </div>
     </div>
   );
