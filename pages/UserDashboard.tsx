@@ -1,36 +1,20 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { createPortal } from 'react-dom';
+import React, { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { StorageService } from '../services/storage';
-import { User, Booking, BookingStatus, Account, Message } from '../types';
+import { User, Booking, BookingStatus, Account } from '../types';
 import { 
   User as UserIcon, Clock, History, LifeBuoy, LogOut, 
   Gamepad2, Copy, Eye, EyeOff, ShieldCheck, 
-  AlertTriangle, ChevronRight, MessageCircle, Award, Sparkles, Lock, ListPlus, Edit2, Trash2,
-  Inbox, CheckCircle2, XCircle, Key, Send, Hash, ArrowLeft
+  ChevronRight, MessageCircle, Lock, AlertTriangle
 } from 'lucide-react';
 
 const UserDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [user, setUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'rentals' | 'listings' | 'requests' | 'messages' | 'history' | 'profile' | 'support'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'rentals' | 'history' | 'profile' | 'support'>('overview');
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [myListings, setMyListings] = useState<Account[]>([]);
-  const [incomingRequests, setIncomingRequests] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Chat State
-  const [conversations, setConversations] = useState<{userId: string, userName: string, accountId: string, accountName: string, lastMessage: Message, unreadCount: number}[]>([]);
-  const [activeChat, setActiveChat] = useState<{userId: string, userName: string, accountId: string, accountName: string} | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const chatBottomRef = useRef<HTMLDivElement>(null);
-
-  // Password Edit Modal
-  const [editingPasswordId, setEditingPasswordId] = useState<string | null>(null);
-  const [newPassword, setNewPassword] = useState('');
 
   // Load user data
   useEffect(() => {
@@ -43,159 +27,18 @@ const UserDashboard: React.FC = () => {
         const userBookings = await StorageService.getUserBookings(currentUser.id);
         userBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setBookings(userBookings);
-
-        // Fetch My Listings
-        const listings = await StorageService.getUserListings(currentUser.id);
-        setMyListings(listings);
-
-        // Fetch Incoming Booking Requests for my listings
-        const allBookings = await StorageService.getBookings();
-        const myAccountIds = new Set(listings.map(l => l.id));
-        const requests = allBookings.filter(b => myAccountIds.has(b.accountId));
-        requests.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        setIncomingRequests(requests);
-
-        // Load Conversations
-        await loadConversations(currentUser.id);
       }
       setLoading(false);
     };
     loadData();
-    
-    // Check for direct chat link in location state
-    if (location.state && location.state.tab === 'messages') {
-        setActiveTab('messages');
-        const { chatWith, accountId } = location.state;
-        if (chatWith && accountId) {
-            // Find account name
-            StorageService.getAccountById(accountId).then(acc => {
-                const name = acc?.name || 'Unknown Account';
-                // Try to find existing user name if possible, else generic
-                // In real app, we'd fetch user profile. Here using placeholder.
-                const userName = 'User ' + chatWith.substring(0, 4); 
-                openChat({ userId: chatWith, userName, accountId, accountName: name });
-            });
-        }
-    }
 
     const unsubscribe = StorageService.subscribe(loadData);
     return () => { unsubscribe(); };
-  }, [location.state]);
-
-  const loadConversations = async (userId: string) => {
-      const allMsgs = await StorageService.getAllUserMessages(userId);
-      const convMap = new Map<string, {userId: string, userName: string, accountId: string, accountName: string, lastMessage: Message, unreadCount: number}>();
-
-      for (const msg of allMsgs) {
-          const otherId = msg.senderId === userId ? msg.receiverId : msg.senderId;
-          const key = `${otherId}-${msg.accountId}`;
-          
-          if (!convMap.has(key)) {
-              convMap.set(key, {
-                  userId: otherId,
-                  userName: 'User ' + otherId.substring(0, 4), // Placeholder name
-                  accountId: msg.accountId,
-                  accountName: msg.accountName || 'Valorant ID',
-                  lastMessage: msg,
-                  unreadCount: 0
-              });
-          }
-          
-          const conv = convMap.get(key)!;
-          if (msg.receiverId === userId && !msg.isRead) {
-              conv.unreadCount++;
-          }
-      }
-      setConversations(Array.from(convMap.values()));
-  };
-
-  // Poll messages when chat is active
-  useEffect(() => {
-      if (!activeChat || !user) return;
-      
-      const pollMessages = async () => {
-          const msgs = await StorageService.getMessages(user.id, activeChat.userId, activeChat.accountId);
-          setMessages(msgs);
-          
-          // Mark as read
-          if (msgs.some(m => m.receiverId === user.id && !m.isRead)) {
-              await StorageService.markMessagesAsRead(activeChat.userId, user.id, activeChat.accountId);
-              loadConversations(user.id); // Refresh counts
-          }
-      };
-
-      pollMessages();
-      const interval = setInterval(pollMessages, 3000);
-      return () => clearInterval(interval);
-  }, [activeChat, user]);
-
-  useEffect(() => {
-      chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, []);
 
   const handleLogout = () => {
     StorageService.logoutUser();
     navigate('/');
-  };
-
-  const handleDeleteListing = async (id: string) => {
-    if(window.confirm("Are you sure you want to delete this listing?")) {
-      await StorageService.deleteAccount(id);
-    }
-  };
-
-  const handleAuthorize = async (booking: Booking) => {
-     if(window.confirm("Authorize this booking? Credentials will be revealed to the renter.")) {
-        // If start time is future, use PRE_BOOKED, else ACTIVE
-        const isFuture = new Date(booking.startTime).getTime() > Date.now();
-        const status = isFuture ? BookingStatus.PRE_BOOKED : BookingStatus.ACTIVE;
-        try {
-           await StorageService.updateBookingStatus(booking.orderId, status);
-        } catch (e: any) {
-           alert(e.message);
-        }
-     }
-  };
-
-  const handleCancelBooking = async (orderId: string) => {
-     if(window.confirm("Reject this booking request?")) {
-        await StorageService.updateBookingStatus(orderId, BookingStatus.CANCELLED);
-     }
-  };
-
-  const handleSavePassword = async () => {
-     if (editingPasswordId && newPassword) {
-        await StorageService.updateAccountPassword(editingPasswordId, newPassword);
-        setEditingPasswordId(null);
-        setNewPassword('');
-        alert("Password updated successfully.");
-     }
-  };
-
-  const openChat = (chat: {userId: string, userName: string, accountId: string, accountName: string}) => {
-      setActiveChat(chat);
-      // Mobile view handling: CSS classes will hide list
-  };
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!newMessage.trim() || !activeChat || !user) return;
-
-      const msg: Message = {
-          id: 'MSG-' + Date.now(),
-          senderId: user.id,
-          receiverId: activeChat.userId,
-          accountId: activeChat.accountId,
-          accountName: activeChat.accountName,
-          content: newMessage.trim(),
-          createdAt: new Date().toISOString(),
-          isRead: false
-      };
-
-      await StorageService.sendMessage(msg);
-      setMessages([...messages, msg]);
-      setNewMessage('');
-      loadConversations(user.id);
   };
 
   if (loading) return null;
@@ -248,234 +91,6 @@ const UserDashboard: React.FC = () => {
           </div>
         );
       
-      case 'messages':
-          return (
-              <div className="h-[600px] flex flex-col md:flex-row bg-brand-surface border border-white/10 rounded-xl overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300">
-                  {/* Conversations List */}
-                  <div className={`w-full md:w-1/3 border-r border-white/10 flex flex-col ${activeChat ? 'hidden md:flex' : 'flex'}`}>
-                      <div className="p-4 border-b border-white/10 bg-brand-dark/50">
-                          <h3 className="font-bold text-white flex items-center gap-2"><MessageCircle size={18} /> Messages</h3>
-                      </div>
-                      <div className="flex-1 overflow-y-auto">
-                          {conversations.length === 0 ? (
-                              <div className="p-8 text-center text-slate-500 text-sm">No messages yet.</div>
-                          ) : (
-                              conversations.map((conv, idx) => (
-                                  <div 
-                                      key={idx}
-                                      onClick={() => openChat(conv)}
-                                      className={`p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors ${activeChat?.userId === conv.userId && activeChat?.accountId === conv.accountId ? 'bg-brand-accent/10 border-l-2 border-l-brand-accent' : ''}`}
-                                  >
-                                      <div className="flex justify-between items-start mb-1">
-                                          <div className="font-bold text-slate-200 text-sm truncate pr-2">{conv.userName}</div>
-                                          {conv.unreadCount > 0 && <span className="bg-brand-accent text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{conv.unreadCount}</span>}
-                                      </div>
-                                      <div className="text-[10px] text-brand-cyan font-mono mb-1 truncate">{conv.accountName}</div>
-                                      <div className="text-xs text-slate-500 truncate">{conv.lastMessage.content}</div>
-                                  </div>
-                              ))
-                          )}
-                      </div>
-                  </div>
-
-                  {/* Chat Area */}
-                  <div className={`w-full md:w-2/3 flex flex-col bg-brand-dark/30 ${!activeChat ? 'hidden md:flex' : 'flex'}`}>
-                      {activeChat ? (
-                          <>
-                              {/* Chat Header */}
-                              <div className="p-4 border-b border-white/10 flex items-center gap-3 bg-brand-surface">
-                                  <button onClick={() => setActiveChat(null)} className="md:hidden text-slate-400 hover:text-white"><ArrowLeft size={20} /></button>
-                                  <div className="w-8 h-8 rounded-full bg-brand-dark border border-white/10 flex items-center justify-center">
-                                      <UserIcon size={16} className="text-slate-400" />
-                                  </div>
-                                  <div className="overflow-hidden">
-                                      <div className="font-bold text-white text-sm">{activeChat.userName}</div>
-                                      <div className="text-[10px] text-brand-cyan font-mono flex items-center gap-1">
-                                          <Hash size={10} /> Re: {activeChat.accountName}
-                                      </div>
-                                  </div>
-                              </div>
-
-                              {/* Messages */}
-                              <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                                  {messages.map(msg => {
-                                      const isMe = msg.senderId === user.id;
-                                      return (
-                                          <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                                              <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${isMe ? 'bg-brand-accent text-white rounded-br-none' : 'bg-brand-surface border border-white/10 text-slate-300 rounded-bl-none'}`}>
-                                                  <div className="break-words">{msg.content}</div>
-                                                  <div className={`text-[9px] mt-1 text-right ${isMe ? 'text-white/70' : 'text-slate-500'}`}>
-                                                      {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                                      {isMe && <span className="ml-1 opacity-70">{msg.isRead ? '• Read' : '• Sent'}</span>}
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      );
-                                  })}
-                                  <div ref={chatBottomRef} />
-                              </div>
-
-                              {/* Input */}
-                              <form onSubmit={handleSendMessage} className="p-4 border-t border-white/10 bg-brand-surface flex gap-2">
-                                  <input 
-                                      type="text" 
-                                      value={newMessage}
-                                      onChange={e => setNewMessage(e.target.value)}
-                                      placeholder="Type a message..."
-                                      className="flex-1 bg-brand-dark border border-white/10 rounded-full px-4 py-2.5 text-sm text-white focus:border-brand-accent outline-none transition-colors"
-                                  />
-                                  <button 
-                                      type="submit" 
-                                      disabled={!newMessage.trim()}
-                                      className="p-2.5 bg-brand-accent text-white rounded-full hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                  >
-                                      <Send size={18} />
-                                  </button>
-                              </form>
-                          </>
-                      ) : (
-                          <div className="flex-1 flex flex-col items-center justify-center text-slate-500 p-8 text-center">
-                              <MessageCircle size={48} className="mb-4 opacity-20" />
-                              <p>Select a conversation to start chatting</p>
-                          </div>
-                      )}
-                  </div>
-              </div>
-          );
-
-      case 'listings':
-        return (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-             <div className="flex justify-between items-center mb-4">
-               <h2 className="text-xl font-bold text-white">My Listed IDs</h2>
-               <button 
-                 onClick={() => navigate('/list-account')}
-                 className="px-4 py-2 bg-brand-cyan text-brand-dark font-bold rounded-lg uppercase text-xs tracking-wider hover:bg-white transition-colors flex items-center gap-2"
-               >
-                 <ListPlus size={16} /> List New ID
-               </button>
-             </div>
-
-             {myListings.length === 0 ? (
-               <div className="bg-brand-surface border border-dashed border-white/10 rounded-xl p-8 text-center">
-                  <Gamepad2 className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                  <p className="text-slate-400 text-sm">You haven't listed any accounts yet.</p>
-               </div>
-             ) : (
-               <div className="grid gap-4">
-                  {myListings.map(listing => (
-                    <div key={listing.id} className="bg-brand-surface border border-white/10 rounded-xl p-4 flex gap-4 items-center">
-                       <div className="w-20 h-20 bg-black rounded-lg border border-white/5 overflow-hidden shrink-0">
-                          <img src={listing.imageUrl} alt="" className="w-full h-full object-cover" />
-                       </div>
-                       <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-white truncate">{listing.name}</h3>
-                          <p className="text-xs text-brand-cyan font-mono uppercase tracking-wide">{listing.rank} // {listing.region || 'Global'}</p>
-                          <div className="mt-2 flex gap-2 text-[10px] text-slate-500 font-mono">
-                             <span className="bg-white/5 px-2 py-1 rounded">1h: ₹{listing.pricing.hours1}</span>
-                             <span className="bg-white/5 px-2 py-1 rounded">24h: ₹{listing.pricing.hours24}</span>
-                          </div>
-                       </div>
-                       <div className="flex flex-col gap-2">
-                          <button onClick={() => setEditingPasswordId(listing.id)} className="p-2 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-white rounded transition-colors" title="Edit Password">
-                             <Key size={16} />
-                          </button>
-                          <button onClick={() => handleDeleteListing(listing.id)} className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors" title="Delete Listing">
-                             <Trash2 size={16} />
-                          </button>
-                       </div>
-                    </div>
-                  ))}
-               </div>
-             )}
-          </div>
-        );
-
-      case 'requests':
-         return (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-               <h2 className="text-xl font-bold text-white mb-4">Booking Requests</h2>
-               {incomingRequests.length === 0 ? (
-                  <div className="bg-brand-surface border border-dashed border-white/10 rounded-xl p-8 text-center">
-                     <Inbox className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                     <p className="text-slate-400 text-sm">No incoming booking requests.</p>
-                  </div>
-               ) : (
-                  <div className="space-y-4">
-                     {incomingRequests.map(req => {
-                        const isPending = req.status === BookingStatus.PENDING;
-                        return (
-                           <div key={req.orderId} className={`bg-brand-surface border rounded-xl p-5 ${isPending ? 'border-brand-accent/50 shadow-[0_0_15px_rgba(232,67,147,0.1)]' : 'border-white/10 opacity-75 hover:opacity-100 transition-opacity'}`}>
-                              <div className="flex justify-between items-start mb-4">
-                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-brand-dark border border-white/10 flex items-center justify-center">
-                                       <Gamepad2 className="w-5 h-5 text-brand-cyan" />
-                                    </div>
-                                    <div>
-                                       <div className="font-bold text-white">{req.accountName}</div>
-                                       <div className="text-[10px] text-slate-500 font-mono">{req.orderId}</div>
-                                    </div>
-                                 </div>
-                                 <div className="text-right">
-                                    <div className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider inline-block ${req.status === BookingStatus.PENDING ? 'bg-yellow-500/10 text-yellow-500' : req.status === BookingStatus.ACTIVE || req.status === BookingStatus.PRE_BOOKED ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
-                                       {req.status}
-                                    </div>
-                                 </div>
-                              </div>
-                              
-                              <div className="grid grid-cols-2 gap-4 text-xs mb-4 p-3 bg-brand-dark rounded-lg border border-white/5">
-                                 <div>
-                                    <div className="text-slate-500 font-bold uppercase text-[9px] mb-1">Renter</div>
-                                    <div className="text-white">{req.customerName || 'Guest'}</div>
-                                 </div>
-                                 <div>
-                                    <div className="text-slate-500 font-bold uppercase text-[9px] mb-1">Duration</div>
-                                    <div className="text-white">{req.durationLabel} ({req.hours}h)</div>
-                                 </div>
-                                 <div>
-                                    <div className="text-slate-500 font-bold uppercase text-[9px] mb-1">Payment Ref</div>
-                                    <div className="text-brand-cyan font-mono select-all">{req.utr}</div>
-                                 </div>
-                                 <div>
-                                    <div className="text-slate-500 font-bold uppercase text-[9px] mb-1">Price</div>
-                                    <div className="text-brand-accent font-bold">₹{req.totalPrice}</div>
-                                 </div>
-                              </div>
-
-                              {isPending && (
-                                 <div className="flex gap-3">
-                                    <button 
-                                       onClick={() => handleAuthorize(req)}
-                                       className="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
-                                    >
-                                       <CheckCircle2 size={14} /> Authorize & Unlock
-                                    </button>
-                                    <button 
-                                       onClick={() => handleCancelBooking(req.orderId)}
-                                       className="flex-1 py-3 bg-red-600/10 hover:bg-red-600 hover:text-white text-red-500 font-bold rounded-lg text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all border border-red-600/20 hover:border-red-600"
-                                    >
-                                       <XCircle size={14} /> Decline
-                                    </button>
-                                 </div>
-                              )}
-                              {(req.status === BookingStatus.ACTIVE || req.status === BookingStatus.PRE_BOOKED) && (
-                                 <button 
-                                    onClick={() => handleCancelBooking(req.orderId)}
-                                    className="w-full py-2 bg-brand-dark hover:bg-red-900/20 text-slate-400 hover:text-red-400 font-bold rounded-lg text-[10px] uppercase tracking-wider transition-all border border-white/5"
-                                 >
-                                    Terminate Session
-                                 </button>
-                              )}
-                           </div>
-                        );
-                     })}
-                  </div>
-               )}
-            </div>
-         );
-
-
-
       case 'rentals':
         return (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -602,9 +217,6 @@ const UserDashboard: React.FC = () => {
              <nav className="p-2 space-y-1">
                {[
                  { id: 'overview', icon: Gamepad2, label: 'Dashboard' },
-                 { id: 'messages', icon: MessageCircle, label: 'Messages', count: conversations.reduce((acc, c) => acc + c.unreadCount, 0) },
-                 { id: 'listings', icon: ListPlus, label: 'My Listed IDs' },
-                 { id: 'requests', icon: Inbox, label: 'Incoming Requests', count: incomingRequests.filter(r => r.status === BookingStatus.PENDING).length },
                  { id: 'rentals', icon: Clock, label: 'My Rentals' },
                  { id: 'history', icon: History, label: 'Booking History' },
                  { id: 'profile', icon: UserIcon, label: 'Profile' },
@@ -624,9 +236,6 @@ const UserDashboard: React.FC = () => {
                       <item.icon className="w-4 h-4" />
                       {item.label}
                    </div>
-                   {item.count && item.count > 0 ? (
-                      <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">{item.count}</span>
-                   ) : null}
                  </button>
                ))}
                
@@ -648,28 +257,6 @@ const UserDashboard: React.FC = () => {
            {renderTabContent()}
         </main>
       </div>
-
-      {/* Password Edit Modal */}
-      {editingPasswordId && createPortal(
-         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-brand-surface border border-white/10 rounded-xl p-6 w-full max-w-sm shadow-2xl">
-               <h3 className="text-lg font-bold text-white mb-4">Update ID Password</h3>
-               <p className="text-slate-400 text-xs mb-4">The new password will be revealed to renters after authorization.</p>
-               <input 
-                  type="text" 
-                  value={newPassword} 
-                  onChange={(e) => setNewPassword(e.target.value)} 
-                  placeholder="Enter new password"
-                  className="w-full bg-brand-dark border border-white/10 rounded-lg p-3 text-white mb-4 focus:border-brand-accent outline-none font-mono"
-               />
-               <div className="flex gap-3">
-                  <button onClick={() => setEditingPasswordId(null)} className="flex-1 py-3 border border-white/10 rounded-lg text-slate-400 hover:text-white font-bold text-xs uppercase">Cancel</button>
-                  <button onClick={handleSavePassword} className="flex-1 py-3 bg-brand-accent hover:bg-pink-600 rounded-lg text-white font-bold text-xs uppercase shadow-lg">Save</button>
-               </div>
-            </div>
-         </div>,
-         document.body
-      )}
     </div>
   );
 };
