@@ -50,6 +50,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   useEffect(() => {
+    // Automatically sync Google session if returning from OAuth callback
+    StorageService.syncGoogleSession().then(() => syncData());
+    
     syncData();
     // Run expiration check immediately on load
     StorageService.checkExpiredBookings();

@@ -523,10 +523,8 @@ export const StorageService = {
   },
 
   loginWithGoogle: async () => {
-    const currentOrigin = window.location.origin;
-    const currentPath = window.location.pathname;
-    const currentHash = window.location.hash || '#/login';
-    const redirectUrl = `${currentOrigin}${currentPath}${currentHash}`;
+    // Clean origin + path without hash fragment for OAuth standards
+    const redirectUrl = window.location.origin + window.location.pathname;
     
     const { error } = await getSupabase().auth.signInWithOAuth({
       provider: 'google',
