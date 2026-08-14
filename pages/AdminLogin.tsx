@@ -20,7 +20,7 @@ const AdminLogin: React.FC = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Hardcoded for MVP
-    if (username === 'pruthvi' && password === 'mh14df5116') {
+    if (username === 'pruthvi' && password === 'uwuvalostore@1111') {
       if (rememberMe) {
         localStorage.setItem('isAdmin', 'true');
         sessionStorage.removeItem('isAdmin'); // Clear session to avoid conflicts
