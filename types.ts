@@ -95,11 +95,14 @@ export interface Booking {
   customerId?: string;
   createdAt: string;
   utr?: string;
+  razorpayPaymentId?: string;
+  razorpayOrderId?: string;
   couponCode?: string; // New: Track which coupon was used
   discountApplied?: number; // New: Track amount saved
 }
 
 export const UPI_ID = "8530085116@fam";
+export const RAZORPAY_KEY_ID = "rzp_test_TDnUcGW25Fqfwf";
 
 export interface HeroSlide {
   id: number;

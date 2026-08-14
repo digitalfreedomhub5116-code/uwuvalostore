@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { Account, UPI_ID, BookingStatus, Booking } from '../types';
+import { Account, UPI_ID, RAZORPAY_KEY_ID, BookingStatus, Booking } from '../types';
 import { StorageService } from '../services/storage';
-import { Copy, ArrowRight, Timer, CalendarClock, Smartphone, ShieldCheck, Zap, Send, Ticket, CheckCircle, XCircle, Loader2, AlertCircle, MessageCircle } from 'lucide-react';
+import { Copy, ArrowRight, Timer, CalendarClock, Smartphone, ShieldCheck, Zap, Send, Ticket, CheckCircle, XCircle, Loader2, AlertCircle, MessageCircle, CreditCard } from 'lucide-react';
 
 interface CheckoutState {
   orderId?: string; // Optional because legacy flow might not have it, but new flow will
@@ -23,6 +23,8 @@ const Checkout: React.FC = () => {
   
   const [orderId, setOrderId] = useState(state?.orderId || '');
   const [timer, setTimer] = useState(600); // 10 minutes for payment
+  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi'>('razorpay');
+  const [isRazorpayLoading, setIsRazorpayLoading] = useState(false);
   const [utr, setUtr] = useState('');
   const [error, setError] = useState('');
   
@@ -128,6 +130,110 @@ const Checkout: React.FC = () => {
             accountId: state.account.id
         }
     });
+  };
+
+  const handleRazorpayPayment = async () => {
+    setError('');
+    
+    if (typeof (window as any).Razorpay === 'undefined') {
+      setError('Razorpay SDK is loading or unavailable. Please refresh.');
+      return;
+    }
+
+    setIsRazorpayLoading(true);
+
+    try {
+      const options = {
+        key: RAZORPAY_KEY_ID,
+        amount: Math.round(finalPrice * 100),
+        currency: 'INR',
+        name: 'UwU Valo Store',
+        description: `Rental: ${state.account.name} (${state.durationLabel})`,
+        image: '/logo.png',
+        handler: async function (response: any) {
+          try {
+            const paymentId = response.razorpay_payment_id;
+
+            if (appliedCoupon) {
+              await StorageService.incrementCouponUsage(appliedCoupon.code);
+            }
+
+            const booking: Booking = {
+              orderId,
+              accountId: state.account.id,
+              accountName: state.account.name,
+              durationLabel: state.durationLabel,
+              hours: state.hours,
+              totalPrice: finalPrice,
+              startTime: startDateTime.toISOString(),
+              endTime: endDateTime.toISOString(),
+              status: BookingStatus.PENDING,
+              createdAt: new Date().toISOString(),
+              utr: `RZP-${paymentId}`,
+              razorpayPaymentId: paymentId,
+              customerId: currentUser?.id,
+              customerName: currentUser?.name,
+              couponCode: appliedCoupon ? appliedCoupon.code : undefined,
+              discountApplied: appliedCoupon ? discountAmount : undefined
+            };
+
+            if (state.orderId) {
+              await StorageService.updateBooking(booking);
+            } else {
+              await StorageService.createBooking(booking);
+            }
+
+            const timeString = state.startMode === 'later' && state.scheduledTime
+              ? startDateTime.toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+              : 'Immediate';
+
+            let message = `
+*RAZORPAY PAYMENT COMPLETE*
+---------------------
+*Order ID:* ${orderId}
+*Valorant ID:* ${state.account.name}
+*Duration:* ${state.durationLabel}
+*Price:* ₹${finalPrice}
+*Razorpay Pay ID:* ${paymentId}
+*Start Time:* ${timeString}
+---------------------
+I have paid via Razorpay. Please activate my account.
+            `.trim();
+
+            const whatsappUrl = `https://wa.me/919860185116?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            navigate('/dashboard');
+          } catch (err: any) {
+            setError(err.message || 'Booking save failed after payment.');
+          } finally {
+            setIsRazorpayLoading(false);
+          }
+        },
+        prefill: {
+          name: currentUser?.name || '',
+          email: currentUser?.email || '',
+          contact: currentUser?.phone || ''
+        },
+        theme: {
+          color: '#e84393'
+        },
+        modal: {
+          ondismiss: function () {
+            setIsRazorpayLoading(false);
+          }
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', function (response: any) {
+        setIsRazorpayLoading(false);
+        setError(response.error?.description || 'Payment failed. Please try again.');
+      });
+      rzp.open();
+    } catch (err: any) {
+      setIsRazorpayLoading(false);
+      setError(err.message || 'Failed to initialize Razorpay checkout.');
+    }
   };
 
   const handleSubmitPayment = async () => {
@@ -378,95 +484,183 @@ I have made the payment. Please verify.
             </div>
          </div>
 
-         {/* SECTION 3: PAYMENT & VERIFICATION (Combined for better flow) */}
+         {/* SECTION 3: PAYMENT & VERIFICATION */}
          <div className="bg-brand-surface border border-white/10 rounded-xl p-6 relative overflow-hidden">
              {/* Background Glow */}
              <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 blur-3xl rounded-full pointer-events-none"></div>
 
-             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-               <span className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-sm text-white shadow-[0_0_15px_rgba(232,67,147,0.4)]">2</span>
-               Make Payment
-             </h2>
+             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+               <h2 className="text-xl font-bold flex items-center gap-2">
+                 <span className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-sm text-white shadow-[0_0_15px_rgba(232,67,147,0.4)]">2</span>
+                 Payment Method
+               </h2>
 
-             <div className="grid md:grid-cols-2 gap-8">
-                 {/* QR Code Column */}
-                 <div className="flex flex-col items-center">
-                    {/* Mobile Pay Button */}
-                    <div className="md:hidden w-full mb-6">
-                      <a 
-                        href={upiString}
-                        className="w-full bg-white text-brand-darker font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors animate-pulse no-underline"
-                      >
-                        <Smartphone className="w-6 h-6" />
-                        Tap to Pay via UPI
-                      </a>
-                      <div className="flex items-center gap-2 justify-center mt-2 text-slate-500 text-xs">
-                          <span className="w-12 h-px bg-white/10"></span> OR <span className="w-12 h-px bg-white/10"></span>
-                      </div>
-                    </div>
-
-                    <div className="bg-white p-4 rounded-xl shadow-inner relative group mx-auto">
-                      <img 
-                        src={qrCodeUrl} 
-                        alt="UPI QR Code" 
-                        className="w-48 h-48 mix-blend-multiply"
-                      />
-                      {/* Scan Overlay */}
-                      <div className="absolute top-0 left-0 w-full h-1 bg-brand-accent/50 animate-[scan_2s_infinite_linear] pointer-events-none" />
-                    </div>
-                    <div className="text-center mt-4">
-                        <p className="text-slate-400 text-sm mb-1">Scan to pay</p>
-                        <p className="text-2xl font-black text-white">₹{finalPrice}</p>
-                    </div>
-                 </div>
-
-                 {/* UTR Column */}
-                 <div className="flex flex-col justify-center space-y-6">
-                    <div className="bg-brand-dark p-4 rounded-lg border border-white/10">
-                       <div className="text-xs text-slate-400 uppercase font-bold mb-2">Merchant UPI ID</div>
-                       <div className="flex items-center justify-between">
-                          <span className="font-mono text-white text-lg">{UPI_ID}</span>
-                          <button 
-                             onClick={() => {
-                               navigator.clipboard.writeText(UPI_ID);
-                             }}
-                             className="text-brand-accent hover:text-white transition-colors"
-                          >
-                            <Copy className="w-5 h-5" />
-                          </button>
-                       </div>
-                    </div>
-
-                    <div className="border-t border-white/10 pt-6">
-                        <label className="block text-sm font-bold text-white mb-2">
-                           Enter Payment Reference ID (UTR)
-                        </label>
-                        <input 
-                          type="text" 
-                          value={utr}
-                          onChange={(e) => {
-                            setUtr(e.target.value);
-                            setError('');
-                          }}
-                          placeholder="12-digit UTR (e.g. 3245xxxxxxxx)"
-                          className="w-full bg-brand-dark border border-white/10 rounded-lg px-4 py-4 text-white focus:border-brand-accent focus:outline-none mb-2 font-mono text-lg tracking-widest placeholder:tracking-normal"
-                          maxLength={12}
-                        />
-                        {error && <p className="text-red-500 text-xs mb-3 font-bold flex items-center gap-1"><AlertCircle size={12}/> {error}</p>}
-
-                        <button 
-                          onClick={handleSubmitPayment}
-                          className="w-full bg-brand-accent hover:bg-pink-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/20 mt-2"
-                        >
-                          <Send className="w-5 h-5" />
-                          VERIFY & BOOK SLOT
-                        </button>
-                        <p className="text-[10px] text-center mt-3 text-slate-500">
-                           Instant verification via WhatsApp protocol.
-                        </p>
-                    </div>
-                 </div>
+               {/* Payment Method Selector Tabs */}
+               <div className="flex bg-brand-dark p-1 rounded-xl border border-white/10 shrink-0">
+                 <button
+                   onClick={() => { setPaymentMethod('razorpay'); setError(''); }}
+                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
+                     paymentMethod === 'razorpay'
+                       ? 'bg-brand-accent text-white shadow-md'
+                       : 'text-slate-400 hover:text-white'
+                   }`}
+                 >
+                   <CreditCard size={14} />
+                   Instant Pay (Razorpay)
+                 </button>
+                 <button
+                   onClick={() => { setPaymentMethod('upi'); setError(''); }}
+                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
+                     paymentMethod === 'upi'
+                       ? 'bg-brand-accent text-white shadow-md'
+                       : 'text-slate-400 hover:text-white'
+                   }`}
+                 >
+                   <Smartphone size={14} />
+                   Manual UPI QR
+                 </button>
+               </div>
              </div>
+
+             {paymentMethod === 'razorpay' ? (
+               /* RAZORPAY PAYMENT GATEWAY */
+               <div className="bg-brand-dark/60 border border-white/10 rounded-2xl p-6 sm:p-8 text-center space-y-6">
+                 <div className="max-w-md mx-auto space-y-4">
+                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-accent/10 border border-brand-accent/30 text-brand-accent mb-2">
+                     <CreditCard size={32} />
+                   </div>
+
+                   <h3 className="text-2xl font-bold text-white tracking-wide">
+                     Pay ₹{finalPrice} with Razorpay
+                   </h3>
+                   <p className="text-slate-400 text-sm leading-relaxed">
+                     Supports UPI (GPay, PhonePe, Paytm), Debit & Credit Cards, Net Banking, and Wallets.
+                   </p>
+
+                   {/* Payment Options Badges */}
+                   <div className="flex flex-wrap justify-center gap-2 pt-2">
+                     {['GPay', 'PhonePe', 'Paytm', 'UPI ID', 'Cards', 'Net Banking'].map((method, idx) => (
+                       <span key={idx} className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-slate-300">
+                         {method}
+                       </span>
+                     ))}
+                   </div>
+                 </div>
+
+                 {error && (
+                   <div className="max-w-md mx-auto p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs font-bold flex items-center justify-center gap-2">
+                     <AlertCircle size={14} /> {error}
+                   </div>
+                 )}
+
+                 <div className="max-w-md mx-auto pt-2">
+                   <button
+                     onClick={handleRazorpayPayment}
+                     disabled={isRazorpayLoading}
+                     className="w-full bg-brand-accent hover:bg-pink-600 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-[0_0_25px_rgba(232,67,147,0.3)] hover:shadow-[0_0_35px_rgba(232,67,147,0.5)] hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none text-base"
+                   >
+                     {isRazorpayLoading ? (
+                       <>
+                         <Loader2 className="w-5 h-5 animate-spin" />
+                         <span>Opening Gateway...</span>
+                       </>
+                     ) : (
+                       <>
+                         <Zap className="w-5 h-5 fill-white" />
+                         <span>PAY ₹{finalPrice} NOW</span>
+                         <ArrowRight className="w-5 h-5" />
+                       </>
+                     )}
+                   </button>
+                   
+                   <p className="text-[10px] text-slate-500 mt-3 flex items-center justify-center gap-1">
+                     <ShieldCheck size={12} className="text-green-400" />
+                     256-Bit SSL Encrypted & Secure Razorpay Payment
+                   </p>
+                 </div>
+               </div>
+             ) : (
+               /* MANUAL UPI QR & UTR SECTION */
+               <div className="grid md:grid-cols-2 gap-8">
+                   {/* QR Code Column */}
+                   <div className="flex flex-col items-center">
+                      {/* Mobile Pay Button */}
+                      <div className="md:hidden w-full mb-6">
+                        <a 
+                          href={upiString}
+                          className="w-full bg-white text-brand-darker font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors animate-pulse no-underline"
+                        >
+                          <Smartphone className="w-6 h-6" />
+                          Tap to Pay via UPI
+                        </a>
+                        <div className="flex items-center gap-2 justify-center mt-2 text-slate-500 text-xs">
+                            <span className="w-12 h-px bg-white/10"></span> OR <span className="w-12 h-px bg-white/10"></span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-4 rounded-xl shadow-inner relative group mx-auto">
+                        <img 
+                          src={qrCodeUrl} 
+                          alt="UPI QR Code" 
+                          className="w-48 h-48 mix-blend-multiply"
+                        />
+                        {/* Scan Overlay */}
+                        <div className="absolute top-0 left-0 w-full h-1 bg-brand-accent/50 animate-[scan_2s_infinite_linear] pointer-events-none" />
+                      </div>
+                      <div className="text-center mt-4">
+                          <p className="text-slate-400 text-sm mb-1">Scan to pay</p>
+                          <p className="text-2xl font-black text-white">₹{finalPrice}</p>
+                      </div>
+                   </div>
+
+                   {/* UTR Column */}
+                   <div className="flex flex-col justify-center space-y-6">
+                      <div className="bg-brand-dark p-4 rounded-lg border border-white/10">
+                         <div className="text-xs text-slate-400 uppercase font-bold mb-2">Merchant UPI ID</div>
+                         <div className="flex items-center justify-between">
+                            <span className="font-mono text-white text-lg">{UPI_ID}</span>
+                            <button 
+                               onClick={() => {
+                                 navigator.clipboard.writeText(UPI_ID);
+                               }}
+                               className="text-brand-accent hover:text-white transition-colors"
+                            >
+                              <Copy className="w-5 h-5" />
+                            </button>
+                         </div>
+                      </div>
+
+                      <div className="border-t border-white/10 pt-6">
+                          <label className="block text-sm font-bold text-white mb-2">
+                             Enter Payment Reference ID (UTR)
+                          </label>
+                          <input 
+                            type="text" 
+                            value={utr}
+                            onChange={(e) => {
+                              setUtr(e.target.value);
+                              setError('');
+                            }}
+                            placeholder="12-digit UTR (e.g. 3245xxxxxxxx)"
+                            className="w-full bg-brand-dark border border-white/10 rounded-lg px-4 py-4 text-white focus:border-brand-accent focus:outline-none mb-2 font-mono text-lg tracking-widest placeholder:tracking-normal"
+                            maxLength={12}
+                          />
+                          {error && <p className="text-red-500 text-xs mb-3 font-bold flex items-center gap-1"><AlertCircle size={12}/> {error}</p>}
+
+                          <button 
+                            onClick={handleSubmitPayment}
+                            className="w-full bg-brand-accent hover:bg-pink-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-accent/20 mt-2"
+                          >
+                            <Send className="w-5 h-5" />
+                            VERIFY & BOOK SLOT
+                          </button>
+                          <p className="text-[10px] text-center mt-3 text-slate-500">
+                             Instant verification via WhatsApp protocol.
+                          </p>
+                      </div>
+                   </div>
+               </div>
+             )}
          </div>
       </div>
     </div>
