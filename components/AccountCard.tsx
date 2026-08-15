@@ -13,6 +13,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ account }) => {
   const [timeLeft, setTimeLeft] = useState<string | null>(null);
   const [isEffectivelyAvailable, setIsEffectivelyAvailable] = useState(!account.isBooked);
   const [upcomingBooking, setUpcomingBooking] = useState<Booking | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Poll for upcoming bookings to display "Pre-Booked" status if applicable
   useEffect(() => {
@@ -87,12 +88,19 @@ const AccountCard: React.FC<AccountCardProps> = ({ account }) => {
         <div className="absolute bottom-0 right-0 w-2 h-2 border-r border-b border-white/20 group-hover:border-brand-accent transition-colors z-20"></div>
 
         {/* Image Overlay */}
-        <div className="relative h-48 w-full overflow-hidden">
+        <div className="relative h-48 w-full overflow-hidden bg-brand-dark/50">
           <div className="absolute inset-0 bg-brand-accent/0 group-hover:bg-brand-accent/10 transition-colors z-10 mix-blend-overlay"></div>
+          
+          {/* Skeleton Loader */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-white/5 animate-pulse z-0"></div>
+          )}
+
           <img 
             src={account.imageUrl} 
             alt={account.name} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            onLoad={() => setImageLoaded(true)}
+            className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${!imageLoaded ? 'opacity-0' : 'opacity-100'}`}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-brand-surface via-transparent to-transparent opacity-90" />
           

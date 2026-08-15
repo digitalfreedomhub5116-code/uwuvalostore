@@ -15,6 +15,7 @@ const ProductDetails: React.FC = () => {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [viewingSkin, setViewingSkin] = useState<Skin | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
   
   const [isSkinsExpanded, setIsSkinsExpanded] = useState(false);
   
@@ -81,7 +82,18 @@ const ProductDetails: React.FC = () => {
       <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12">
          <div className="space-y-6">
             <div className="relative rounded-2xl overflow-hidden border border-white/5 bg-brand-dark cursor-zoom-in group" onClick={() => setIsImageModalOpen(true)}>
-               <img src={account.imageUrl} className="w-full aspect-video object-cover" alt={account.name} />
+               
+               {/* Skeleton Loader */}
+               {!imageLoaded && (
+                  <div className="absolute inset-0 bg-white/5 animate-pulse z-0"></div>
+               )}
+
+               <img 
+                 src={account.imageUrl} 
+                 className={`w-full aspect-video object-cover transition-all duration-700 ${!imageLoaded ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}`} 
+                 alt={account.name} 
+                 onLoad={() => setImageLoaded(true)}
+               />
                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Maximize2 className="text-white w-10 h-10" />
                </div>
